@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GASPOL! — Ekspedisi Sistem Bahan Bakar | SMK Kelas X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b1f33; --navy2:#123052; --ink:#0e1622;
+  --sun:#ffd23f; --orange:#ff9d3d; --red:#ff5d3a; --teal:#1f6f8b;
+  --green:#2ecc71; --paper:#fffdf5; --line:#2a4d74;
+  --disp:'Rubik Mono One',monospace; --body:'Baloo 2',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--body);background:var(--navy);color:var(--paper);overflow-x:hidden}
+button{font-family:var(--body);cursor:pointer}
+.screen{display:none}
+.screen.active{display:block}
+
+/* ============ TOMBOL UMUM ============ */
+.btn{display:inline-block;border:3px solid var(--ink);border-radius:14px;padding:.8em 1.5em;
+  font-weight:800;font-size:1rem;color:var(--ink);background:var(--sun);
+  box-shadow:0 6px 0 var(--ink);transition:transform .12s,box-shadow .12s;letter-spacing:.02em}
+.btn:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.btn.big{font-size:1.15rem;padding:1em 1.6em;border-radius:16px}
+#muteBtn{position:fixed;top:12px;right:12px;z-index:300;width:44px;height:44px;border-radius:50%;
+  border:3px solid var(--ink);background:var(--paper);font-size:1.1rem;box-shadow:0 4px 0 var(--ink)}
+#muteBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+
+/* ============ LAYAR MULAI ============ */
+#scrStart{min-height:100dvh;background:
+  radial-gradient(circle at 78% 30%,rgba(255,157,61,.25),transparent 40%),
+  radial-gradient(circle at 15% 80%,rgba(31,111,139,.3),transparent 45%),
+  repeating-linear-gradient(-45deg,rgba(255,210,63,.03) 0 26px,transparent 26px 52px),
+  var(--navy);
+  display:flex;flex-direction:column}
+.start-wrap{flex:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;
+  max-width:1180px;margin:0 auto;padding:56px 28px 24px;width:100%}
+.tag{display:inline-block;background:var(--sun);color:var(--ink);font-weight:800;font-size:.78rem;
+  letter-spacing:.14em;padding:.4em 1em;border:2.5px solid var(--ink);border-radius:99px;box-shadow:0 4px 0 var(--ink)}
+.logo{font-family:var(--disp);font-size:clamp(3rem,7.5vw,5.6rem);line-height:.95;margin:18px 0 6px;
+  color:var(--paper);transform:rotate(-2deg);text-shadow:4px 4px 0 var(--ink),8px 8px 0 rgba(255,93,58,.55)}
+.logo span{color:var(--sun)}
+.tagline{font-size:1.12rem;line-height:1.55;color:#d8e6f5;max-width:52ch}
+.tagline b{color:var(--sun)}
+.rules{list-style:none;margin:22px 0;display:grid;gap:10px}
+.rules li{background:rgba(18,48,82,.75);border:2px solid var(--line);border-radius:12px;
+  padding:.6em 1em;font-weight:600;display:flex;gap:.7em;align-items:flex-start;line-height:1.35}
+.rules .ic{font-size:1.15rem}
+.rider-form{display:grid;gap:10px;max-width:440px}
+.rider-form label{font-family:var(--disp);font-size:.8rem;letter-spacing:.1em;color:var(--sun)}
+.rider-form input{padding:.85em 1.1em;border-radius:12px;border:3px solid var(--ink);font:600 1.05rem var(--body);
+  background:var(--paper);color:var(--ink);box-shadow:0 5px 0 var(--ink);outline:none}
+.rider-form input:focus{border-color:var(--orange)}
+.start-right{display:grid;gap:16px}
+.preview{border:4px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:10px 10px 0 rgba(0,0,0,.35)}
+.chip-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.stat-chip{font-family:var(--disp);font-size:.82rem;background:var(--navy2);border:2.5px solid var(--line);
+  border-radius:10px;padding:.55em 1em;color:var(--sun)}
+.ticker{overflow:hidden;background:var(--sun);border-top:3px solid var(--ink);padding:.5em 0;white-space:nowrap}
+.ticker span{display:inline-block;font-family:var(--disp);font-size:.78rem;color:var(--ink);
+  letter-spacing:.08em;animation:tick 28s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.start-foot{text-align:center;padding:12px;font-size:.85rem;color:#9db6cf;background:#081827}
+@media(max-width:920px){.start-wrap{grid-template-columns:1fr;padding-top:64px}.start-right{order:-1}}
+
+/* ============ SCENE (dipakai di mulai & game) ============ */
+.scene{position:relative;overflow:hidden;height:280px;
+  background:linear-gradient(#0d2b45 0%,#1c4e7a 42%,#e8703a 78%,#ffb45e 100%)}
+.scene.tall{height:clamp(230px,36vh,380px)}
+.sun{position:absolute;top:14%;right:12%;width:88px;height:88px;border-radius:50%;
+  background:radial-gradient(circle,#fff3b0 20%,var(--sun) 55%,rgba(255,210,63,0) 72%);
+  animation:sunpulse 4s ease-in-out infinite}
+@keyframes sunpulse{50%{transform:scale(1.12);filter:brightness(1.15)}}
+.cloud{position:absolute;height:16px;width:60px;background:#fff;border-radius:20px;opacity:.85;
+  box-shadow:26px 6px 0 8px #fff,-24px 8px 0 5px #fff;animation:drift linear infinite}
+.cloud.c1{top:12%;left:-15%;animation-duration:52s}
+.cloud.c2{top:28%;left:-30%;animation-duration:74s;transform:scale(1.5);opacity:.6}
+.cloud.c3{top:6%;left:-50%;animation-duration:63s;transform:scale(.8)}
+@keyframes drift{to{transform:translateX(130vw) }}
+.layer{position:absolute;left:0;right:0;background-repeat:repeat-x;background-size:1200px auto;
+  animation:slideX var(--dur,60s) linear infinite}
+@keyframes slideX{to{background-position-x:-1200px}}
+.mtn{bottom:26%;height:56%;z-index:1;--dur:110s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='230'%3E%3Cpath d='M0 150 L150 60 270 170 420 40 560 200 700 90 830 210 980 70 1120 190 1200 150 1200 230 0 230Z' fill='%2316334f'/%3E%3Cpath d='M0 190 L200 120 360 210 540 130 720 220 900 150 1080 225 1200 190 1200 230 0 230Z' fill='%231d4266'/%3E%3C/svg%3E")}
+.hills{bottom:26%;height:40%;z-index:2;--dur:65s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='170'%3E%3Cpath d='M0 120 Q150 40 300 110 Q450 180 600 100 Q750 30 900 110 Q1050 185 1200 120 L1200 170 0 170Z' fill='%231f6f8b'/%3E%3Cpath d='M0 150 Q200 110 400 145 Q600 178 800 140 Q1000 108 1200 150 L1200 170 0 170Z' fill='%23175a74'/%3E%3C/svg%3E")}
+.props{bottom:26%;height:44%;z-index:3;--dur:20s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='210'%3E%3Cg fill='%230f3a52'%3E%3Cpath d='M100 60 65 140 135 140Z'/%3E%3Cpath d='M100 100 58 175 142 175Z'/%3E%3Cpath d='M760 55 722 145 798 145Z'/%3E%3Cpath d='M760 98 715 180 805 180Z'/%3E%3Cpath d='M1130 90 1100 160 1160 160Z'/%3E%3C/g%3E%3Crect x='95' y='175' width='10' height='35' fill='%234a3421'/%3E%3Crect x='755' y='178' width='10' height='32' fill='%234a3421'/%3E%3Cellipse cx='340' cy='196' rx='48' ry='20' fill='%23154b63'/%3E%3Cellipse cx='950' cy='198' rx='40' ry='16' fill='%23154b63'/%3E%3Crect x='515' y='140' width='10' height='70' fill='%23d9dee6'/%3E%3Crect x='498' y='118' width='44' height='28' rx='5' fill='%23ffd23f'/%3E%3C/svg%3E")}
+.scene.run .mtn{--dur:11s}.scene.run .hills{--dur:6s}.scene.run .props{--dur:1.8s}
+.scene.idle .layer,.scene.stall .layer,.scene.finish .layer{animation-play-state:paused}
+.road{position:absolute;left:0;right:0;bottom:0;height:26%;z-index:4;background:#2e3542;
+  border-top:5px solid #454f60}
+.road::after{content:'';position:absolute;top:5px;left:0;right:0;height:4px;
+  background:repeating-linear-gradient(90deg,var(--sun) 0 34px,transparent 34px 68px);opacity:.9}
+.dash{position:absolute;left:-120px;right:0;bottom:10%;height:9px;z-index:5;border-radius:4px;
+  background:repeating-linear-gradient(90deg,var(--sun) 0 62px,transparent 62px 124px);
+  animation:dashmove var(--rdur,3.2s) linear infinite}
+@keyframes dashmove{to{transform:translateX(-124px)}}
+.scene.run .dash{--rdur:.4s}
+.scene.idle .dash,.scene.stall .dash,.scene.finish .dash{animation-play-state:paused}
+
+/* --- motor --- */
+.bike-rig{position:absolute;left:15%;bottom:20%;width:min(280px,38vw);z-index:6;
+  filter:drop-shadow(0 14px 7px rgba(0,0,0,.35))}
+.scene.run .bike-rig{animation:bob .18s ease-in-out infinite}
+.scene.idle .bike-rig,.scene.finish .bike-rig{animation:bob 1.8s ease-in-out infinite}
+.scene.stall .bike-rig{animation:jolt .45s linear infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@keyframes jolt{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-3px) rotate(-.7deg)}
+  50%{transform:translateX(2px) rotate(.5deg)}75%{transform:translateX(-2px) rotate(-.4deg)}}
+.bike{width:100%;display:block}
+.wheel{transform-box:fill-box;transform-origin:center}
+.scene.run .wheel{animation:spin .32s linear infinite}
+.scene.idle .wheel,.scene.finish .wheel{animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lamp{filter:drop-shadow(0 0 0 rgba(255,210,63,0))}
+.scene.run .lamp,.scene.idle .lamp{filter:drop-shadow(0 0 7px rgba(255,210,63,.95))}
+.speedlines{position:absolute;inset:0;z-index:5;display:none;pointer-events:none}
+.scene.run .speedlines{display:block}
+.speedlines span{position:absolute;height:4px;border-radius:4px;background:rgba(255,255,255,.55);
+  animation:streak .45s linear infinite}
+.speedlines span:nth-child(1){top:46%;width:90px;left:100%}
+.speedlines span:nth-child(2){top:60%;width:130px;left:100%;animation-delay:.15s}
+.speedlines span:nth-child(3){top:72%;width:70px;left:100%;animation-delay:.28s}
+@keyframes streak{to{transform:translateX(-130vw)}}
+.bubble{position:absolute;z-index:8;left:calc(15% + min(280px,38vw)*.32);bottom:calc(20% + min(280px,38vw)*.72);
+  background:var(--paper);color:var(--red);font-family:var(--disp);font-size:1.05rem;
+  border:3px solid var(--ink);border-radius:12px;padding:.4em .8em;display:none;
+  transform:rotate(-4deg);box-shadow:0 5px 0 var(--ink);animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.bubble::after{content:'';position:absolute;bottom:-12px;left:22px;border:8px solid transparent;border-top-color:var(--ink)}
+.scene.stall .bubble{display:block}
+@keyframes pop{from{transform:scale(0) rotate(-4deg)}}
+.puff{position:absolute;border-radius:50%;background:rgba(190,200,212,.9);pointer-events:none;
+  animation:puff 1.15s ease-out forwards;z-index:7}
+@keyframes puff{to{transform:translate(-46px,-52px) scale(3);opacity:0}}
+.dust{position:absolute;width:11px;height:11px;border-radius:50%;background:#c9a86b;pointer-events:none;
+  animation:dustfly .7s linear forwards;z-index:5}
+@keyframes dustfly{to{transform:translate(-60px,-16px) scale(1.8);opacity:0}}
+.floater{position:absolute;left:calc(15% + 90px);bottom:calc(20% + min(280px,38vw)*.8);z-index:9;
+  font-family:var(--disp);color:var(--sun);font-size:1.3rem;text-shadow:2px 2px 0 var(--ink);
+  animation:rise 1.3s ease-out forwards;pointer-events:none}
+@keyframes rise{to{transform:translateY(-70px);opacity:0}}
+.ck-sign{position:absolute;bottom:26%;right:-150px;z-index:7;display:grid;justify-items:center;gap:0}
+.ck-sign .board{background:var(--sun);color:var(--ink);border:3px solid var(--ink);border-radius:8px;
+  font-family:var(--disp);font-size:.8rem;padding:.4em .8em;white-space:nowrap;box-shadow:0 4px 0 var(--ink)}
+.ck-sign .pole{width:8px;height:52px;background:#7a5a34;border:2px solid var(--ink)}
+.gate{position:absolute;bottom:26%;right:6%;z-index:8;display:grid;justify-items:center;
+  animation:gateIn .6s cubic-bezier(.2,1.5,.4,1)}
+@keyframes gateIn{from{transform:translateX(140px) scale(.7);opacity:0}}
+.gate .banner{background:var(--paper);color:var(--ink);border:4px solid var(--ink);border-radius:10px;
+  font-family:var(--disp);font-size:clamp(.75rem,2vw,1.05rem);padding:.5em 1em;white-space:nowrap;
+  box-shadow:0 6px 0 var(--ink);background-image:
+  repeating-conic-gradient(#171c24 0 25%,var(--paper) 0 50%);background-size:14px 14px;background-position:0 0;
+  padding-top:1.6em;position:relative}
+.gate .banner b{background:var(--paper);padding:.15em .5em;border-radius:6px}
+.gate .posts{display:flex;justify-content:space-between;width:100%;height:86px}
+.gate .posts i{width:12px;height:100%;background:#7a5a34;border:2.5px solid var(--ink)}
+
+/* ============ HUD ============ */
+#scrGame{display:none;flex-direction:column;height:100dvh;background:var(--navy)}
+#scrGame.active{display:flex}
+.hud{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;
+  background:linear-gradient(90deg,#081827,#123052);border-bottom:4px solid var(--ink)}
+.rider-chip{display:flex;align-items:center;gap:10px;background:var(--sun);color:var(--ink);
+  border:3px solid var(--ink);border-radius:12px;padding:.3em .8em .3em .4em;box-shadow:0 4px 0 var(--ink)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--red);color:#fff;display:grid;
+  place-items:center;font-family:var(--disp);font-size:1rem;border:2.5px solid var(--ink)}
+.rider-chip small{display:block;font-size:.6rem;letter-spacing:.14em;font-weight:800;opacity:.75}
+.rider-chip b{font-size:.95rem;line-height:1}
+.track{flex:1;min-width:220px;position:relative;display:flex;align-items:center;gap:8px}
+.t-flag{font-family:var(--disp);font-size:.6rem;background:var(--navy);border:2px solid var(--line);
+  border-radius:8px;padding:.35em .55em;color:var(--sun);white-space:nowrap}
+.segs{flex:1;display:flex;gap:3px}
+.segs span{flex:1;height:12px;border-radius:4px;background:#1a3a5c;border:1.5px solid #0a1a2c;transition:.25s}
+.segs span.on{background:var(--sun);box-shadow:0 0 8px rgba(255,210,63,.7)}
+.track .marker{position:absolute;top:-13px;font-size:15px;transition:left .9s cubic-bezier(.4,0,.2,1);
+  transform:translateX(-50%);filter:drop-shadow(0 2px 1px rgba(0,0,0,.5))}
+.hud-stats{display:flex;gap:10px}
+.stat{background:#0a1e33;border:2.5px solid var(--line);border-radius:10px;padding:.25em .8em;text-align:center}
+.stat small{display:block;font-size:.58rem;letter-spacing:.14em;color:#8fb1d2;font-weight:800}
+.stat b{font-family:var(--disp);font-size:1.05rem;color:var(--paper)}
+.stat.bad b{color:var(--red)}
+.stat.good b{color:var(--green)}
+.streak-chip{font-family:var(--disp);font-size:.72rem;background:var(--red);border:2.5px solid var(--ink);
+  color:#fff;border-radius:99px;padding:.4em .9em;box-shadow:0 3px 0 var(--ink);display:none}
+.streak-chip.show{display:inline-block;animation:pop .3s cubic-bezier(.2,1.6,.4,1)}
+
+/* ============ KONSOL SOAL ============ */
+.console{flex:1;overflow-y:auto;padding:18px clamp(12px,4vw,40px) 30px;background:
+  repeating-linear-gradient(-45deg,rgba(255,210,63,.025) 0 22px,transparent 22px 44px),var(--navy)}
+.console-inner{max-width:860px;margin:0 auto;background:var(--navy2);border:4px solid var(--ink);
+  border-radius:20px;box-shadow:8px 8px 0 rgba(0,0,0,.35);overflow:hidden}
+.c-top{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0a1c31;border-bottom:3px solid var(--ink)}
+.chip{font-family:var(--disp);font-size:.78rem;background:var(--sun);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:9px;padding:.45em .8em;white-space:nowrap;box-shadow:0 3px 0 var(--ink)}
+.chip.km{background:var(--teal);color:#fff}
+.timer{flex:1;height:16px;background:#071524;border:2.5px solid var(--ink);border-radius:99px;overflow:hidden}
+.tbar{height:100%;width:100%;background:var(--green);border-radius:99px;transition:width .1s linear}
+.tbar.low{background:var(--sun)}.tbar.crit{background:var(--red);animation:blink .35s steps(2) infinite}
+@keyframes blink{50%{opacity:.45}}
+.q-body{padding:20px clamp(14px,3vw,30px) 26px}
+.q-body h2{font-size:clamp(1.05rem,2.4vw,1.4rem);line-height:1.45;margin-bottom:18px;color:var(--paper)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:#0f2740;color:#eaf2fb;
+  border:3px solid var(--line);border-radius:14px;padding:.8em 1em;font-size:1rem;font-weight:600;
+  transition:transform .12s,border-color .12s,background .12s;line-height:1.3}
+.opt .key{font-family:var(--disp);font-size:.85rem;background:var(--sun);color:var(--ink);
+  border:2.5px solid var(--ink);width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;
+  border-radius:9px;box-shadow:0 3px 0 var(--ink)}
+.opt:hover:not(:disabled){transform:translateY(-3px);border-color:var(--sun);background:#14314f}
+.opt:disabled{cursor:default;opacity:.85}
+.opt.right{background:#0f3d2a;border-color:var(--green);opacity:1}
+.opt.right .key{background:var(--green);color:#fff}
+.opt.wrong{background:#4a1610;border-color:var(--red);opacity:1;animation:shakeX .4s}
+.opt.wrong .key{background:var(--red);color:#fff}
+@keyframes shakeX{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.fb{display:flex;gap:16px;align-items:center;padding:22px clamp(14px,3vw,30px);flex-wrap:wrap}
+.fb .fb-ic{font-size:2.6rem;width:74px;height:74px;flex:0 0 74px;display:grid;place-items:center;
+  border-radius:18px;border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.fb.ok .fb-ic{background:var(--green)}
+.fb.bad .fb-ic{background:var(--red)}
+.fb h3{font-family:var(--disp);font-size:clamp(.95rem,2.4vw,1.3rem);letter-spacing:.03em;margin-bottom:4px}
+.fb.ok h3{color:var(--green)}.fb.bad h3{color:var(--red)}
+.fb p{font-size:.98rem;line-height:1.5;color:#d8e6f5;max-width:56ch}
+.fb p b{color:var(--sun)}
+.fb .btn{margin-left:auto}
+.run-strip{padding:34px 20px;text-align:center;font-family:var(--disp);font-size:clamp(.95rem,2.6vw,1.35rem);
+  color:var(--sun);letter-spacing:.04em}
+.run-strip .dots::after{content:'…';animation:blink .6s steps(2) infinite}
+@media(max-width:640px){.fb .btn{margin:6px auto 0}}
+</style>
+</head>
+<body>
+<button id="muteBtn" title="Suara">🔊</button>
+
+<!-- ================= LAYAR MULAI ================= -->
+<section id="scrStart" class="screen active">
+  <div class="start-wrap">
+    <div>
+      <span class="tag">SMK • TEKNIK SEPEDA MOTOR • KELAS X</span>
+      <h1 class="logo">GAS<span>POL!</span></h1>
+      <p class="tagline">Ekspedisi <b>60 KM</b> menaklukkan <b>30 pos</b> pengetahuan
+        <b>Sistem Bahan Bakar</b> — dari tangki sampai Bukit Kampoeng!</p>
+      <ul class="rules">
+        <li><span class="ic">✅</span> Jawab <b>&nbsp;benar&nbsp;</b> → mesin menyala, motor melaju ke pos berikutnya.</li>
+        <li><span class="ic">🛠️</span> Jawab <b>&nbsp;salah&nbsp;</b> → motor <b>mogok!</b> Servis dulu, lalu coba lagi soal yang sama.</li>
+        <li><span class="ic">🏁</span> Taklukkan ke-30 pos → kamu <b>sampai di tujuan</b> sebagai rider sejati.</li>
+        <li><span class="ic">⏱️</span> Waktu per pos: <b>25 detik</b>. Kehabisan waktu = mogok juga!</li>
+      </ul>
+      <div class="rider-form">
+        <label for="inpName">NAMA RIDER (SISWA)</label>
+        <input id="inpName" maxlength="18" placeholder="cth: Rizky Ramadhan" autocomplete="off">
+        <button id="btnStart" class="btn big">▶ STARTER — Nyalakan Mesin!</button>
+      </div>
+    </div>
+    <div class="start-right">
+      <div class="preview">
+        <div class="scene run" style="height:250px">
+          <div class="sun"></div>
+          <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+          <div class="layer mtn"></div><div class="layer hills"></div><div class="layer props"></div>
+          <div class="road"></div><div class="dash"></div>
+          <div class="speedlines"><span></span><span></span><span></span></div>
+          <div class="bike-rig bike-slot"></div>
+        </div>
+      </div>
+      <div class="chip-row">
+        <span class="stat-chip">📍 30 POS</span>
+        <span class="stat-chip">🛣️ 60 KM</span>
+        <span class="stat-chip">⏱️ 25 DTK/POS</span>
+        <span class="stat-chip">⛽ 100% MATERI BAHAN BAKAR</span>
+      </div>
+    </div>
+  </div>
+  <div class="ticker"><span id="tickerTxt"></span></div>
+  <div class="start-foot">Media pembelajaran interaktif — Komponen Sistem Bahan Bakar Sepeda Motor • Kelas X TBSM</div>
+</section>
+
+<!-- ================= LAYAR GAME ================= -->
+<section id="scrGame" class="screen">
+  <header class="hud">
+    <div class="rider-chip"><div class="avatar" id="avatar">R</div>
+      <div><small>RIDER</small><b id="riderName">RIDER</b></div></div>
+    <div class="track">
+      <span class="t-flag">🏫 SMK</span>
+      <div class="segs" id="segs"></div>
+      <span class="t-flag">🏁 BUKIT KAMPOENG</span>
+      <span class="marker" id="marker" style="left:0%">🏍️</span>
+    </div>
+    <span class="streak-chip" id="streakChip">🔥 STREAK x3</span>
+    <div class="hud-stats">
+      <div class="stat good"><small>BENAR</small><b id="hBenar">0</b></div>
+      <div class="stat bad"><small>MOGOK</small><b id="hMogok">0</b></div>
+      <div class="stat"><small>POS</small><b id="hPos">0/30</b></div>
+      <div class="stat"><small>KM</small><b id="hKm">0</b></div>
+    </div>
+  </header>
+
+  <div class="scene tall idle" id="scene">
+    <div class="sun"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+    <div class="layer mtn"></div><div class="layer hills"></div><div class="layer props"></div>
+    <div class="road"></div><div class="dash"></div>
+    <div class="speedlines"><span></span><span></span><span></span></div>
+    <div class="bike-rig bike-slot" id="bikeRig"></div>
+    <div class="bubble">MOGOK!</div>
+    <div id="fx"></div>
+  </div>
+
+  <div class="console"><div class="console-inner">
+    <div class="c-top">
+      <span class="chip" id="chipPos">POS 1/30</span>
+      <div class="timer"><div class="tbar" id="tbar"></div></div>
+      <span class="chip km" id="chipKm">KM 0/60</span>
+    </div>
+    <div id="qBody" class="q-body">
+      <h2 id="qText"></h2>
+      <div class="opts" id="opsi"></div>
+    </div>
+    <div id="fb" class="fb" hidden>
+      <div class="fb-ic" id="fbIc">✅</div>
+      <div style="flex:1;min-width:220px"><h3 id="fbTitle"></h3><p id="fbText"></p></div>
+      <button class="btn big" id="fbBtn"></button>
+    </div>
+    <div id="runStrip" class="run-strip" hidden>🏍️ BRUUM! Melaju<span class="dots"></span></div>
+  </div></div>
+</section>
+
+<!-- ================= LAYAR FINISH ================= -->
+<section id="scrEnd" class="screen" style="min-height:100dvh;background:
+  radial-gradient(circle at 50% 0%,rgba(255,157,61,.28),transparent 55%),
+  repeating-linear-gradient(-45deg,rgba(255,210,63,.03) 0 26px,transparent 26px 52px),var(--navy)">
+  <div style="max-width:900px;margin:0 auto;padding:56px 22px 60px">
+    <div style="text-align:center">
+      <span class="tag">🏁 GARIS FINIS — BUKIT KAMPOENG</span>
+      <h1 class="logo" style="font-size:clamp(2rem,5.5vw,3.6rem)">SELAMAT DATANG, <span id="endName">RIDER!</span></h1>
+      <p class="tagline" style="margin:0 auto" id="endNote"></p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:28px 0 18px">
+      <div class="stat" style="padding:.9em"><small>WAKTU TEMPUH</small><b id="endWaktu">0:00</b></div>
+      <div class="stat good" style="padding:.9em"><small>BENAR LANGSUNG</small><b id="endBenar">0/30</b></div>
+      <div class="stat bad" style="padding:.9em"><small>MOGOK</small><b id="endMogok">0</b></div>
+      <div class="stat" style="padding:.9em"><small>JARAK</small><b>60 KM</b></div>
+    </div>
+    <div style="text-align:center;margin-bottom:26px">
+      <div class="chip" id="endGrade" style="font-size:1.05rem;padding:.7em 1.4em">NILAI: A</div>
+    </div>
+    <div class="console-inner" style="background:var(--navy2)">
+      <div class="c-top"><span class="chip">📒 CATATAN BENGKEL — MATERI YANG PERLU DIULANG</span></div>
+      <div id="recap" style="padding:18px;display:grid;gap:12px"></div>
+    </div>
+    <div style="text-align:center;margin-top:30px">
+      <button class="btn big" id="btnReplay">🔁 ULANGI EKSPEDISI</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEMPLATE MOTOR ================= -->
+<template id="bikeTpl">
+<svg class="bike" viewBox="0 0 340 210" aria-hidden="true">
+  <g class="wheel"><circle cx="78" cy="164" r="36" fill="#171c24"/><circle cx="78" cy="164" r="21" fill="#232b36"/>
+    <g stroke="#aeb9c6" stroke-width="3.5"><line x1="78" y1="132" x2="78" y2="196"/><line x1="46" y1="164" x2="110" y2="164"/>
+    <line x1="55" y1="141" x2="101" y2="187"/><line x1="55" y1="187" x2="101" y2="141"/></g>
+    <circle cx="78" cy="164" r="7" fill="#ffd23f"/></g>
+  <g class="wheel"><circle cx="262" cy="164" r="36" fill="#171c24"/><circle cx="262" cy="164" r="21" fill="#232b36"/>
+    <g stroke="#aeb9c6" stroke-width="3.5"><line x1="262" y1="132" x2="262" y2="196"/><line x1="230" y1="164" x2="294" y2="164"/>
+    <line x1="239" y1="141" x2="285" y2="187"/><line x1="239" y1="187" x2="285" y2="141"/></g>
+    <circle cx="262" cy="164" r="7" fill="#ffd23f"/></g>
+  <path d="M150 148 C122 166 96 172 62 170" stroke="#8d99a8" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <rect x="16" y="158" width="56" height="20" rx="10" fill="#aab6c4"/><rect x="16" y="158" width="56" height="8" rx="4" fill="#cdd7e1"/>
+  <line x1="80" y1="162" x2="148" y2="146" stroke="#39424e" stroke-width="9" stroke-linecap="round"/>
+  <rect x="136" y="116" width="54" height="46" rx="9" fill="#5b6673"/>
+  <rect x="164" y="92" width="28" height="34" rx="6" fill="#6d7887" transform="rotate(14 178 109)"/>
+  <g stroke="#49545f" stroke-width="3"><line x1="166" y1="100" x2="194" y2="106"/><line x1="165" y1="108" x2="193" y2="114"/><line x1="164" y1="116" x2="192" y2="122"/></g>
+  <path d="M150 112 C170 100 200 96 232 88" stroke="#39424e" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <line x1="234" y1="84" x2="262" y2="162" stroke="#9aa4b1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M224 148 A42 42 0 0 1 300 146" stroke="#ff5d3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M214 84 L242 73" stroke="#232a33" stroke-width="7" stroke-linecap="round"/>
+  <circle class="lamp" cx="251" cy="95" r="9" fill="#ffd23f" stroke="#232a33" stroke-width="3"/>
+  <path d="M100 104 C112 98 148 100 160 108 L158 121 C132 123 108 117 98 112 Z" fill="#232a33"/>
+  <path d="M90 99 L104 97 102 110 91 109 Z" fill="#ff5d3a"/><circle cx="93" cy="104" r="3.5" fill="#ff2d1a"/>
+  <path d="M148 106 C156 86 196 82 216 94 L224 110 C200 120 166 120 148 114 Z" fill="#ff5d3a"/>
+  <path d="M156 96 C170 88 194 87 206 93" stroke="#ffd9cf" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+  <path d="M150 110 C172 116 200 115 220 107" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".85"/>
+  <rect x="112" y="72" width="24" height="34" rx="9" fill="#1f6f8b" transform="rotate(14 124 89)"/>
+  <path d="M134 106 L160 130 L154 156" stroke="#27415f" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="140" y="152" width="26" height="11" rx="5" fill="#171c24"/>
+  <path d="M130 104 C136 84 150 72 170 66" stroke="#ffd23f" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <path d="M164 72 L192 92 L220 82" stroke="#ffd23f" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="221" cy="82" r="6" fill="#27415f"/>
+  <circle cx="178" cy="48" r="17" fill="#ff5d3a"/>
+  <path d="M163 42 A17 17 0 0 1 193 45" stroke="#fff" stroke-width="4" fill="none"/>
+  <rect x="182" y="44" width="14" height="10" rx="5" fill="#171c24"/>
+</svg>
+</template>
+
+<script>
+/* ================= DATA 30 SOAL ================= */
+const QUESTIONS=[
+{q:"Komponen yang berfungsi menyimpan bahan bakar sebelum dialirkan ke sistem pencampuran adalah …",
+ o:["Karburator","Tangki bahan bakar","Saringan udara","Bak oli mesin"],a:1,
+ x:"Tangki (fuel tank) berfungsi menyimpan cadangan bahan bakar sebelum mengalir menuju karburator atau sistem injeksi."},
+{q:"Urutan aliran bahan bakar yang benar pada sepeda motor adalah …",
+ o:["Karburator → tangki → saringan → mesin","Tangki → saringan bahan bakar → karburator → mesin","Saringan → tangki → mesin → karburator","Mesin → karburator → tangki → saringan"],a:1,
+ x:"Alurnya: tangki menyimpan bensin, saringan membersihkan kotoran, karburator/injektor mencampur dengan udara, lalu campuran masuk ke mesin."},
+{q:"Fungsi saringan bahan bakar (fuel filter) adalah …",
+ o:["Menyaring udara yang masuk ke karburator","Mendinginkan bahan bakar","Menyaring kotoran dan air agar tidak masuk karburator/injektor","Menambah tekanan bahan bakar"],a:2,
+ x:"Fuel filter menahan kotoran, debu, dan air supaya bensin yang masuk ke karburator/injektor benar-benar bersih."},
+{q:"Kran bahan bakar (fuel tap) pada tangki berfungsi untuk …",
+ o:["Mengukur volume bensin di tangki","Membuka dan menutup aliran bensin dari tangki ke karburator","Menyaring bensin dari air","Mendinginkan bahan bakar"],a:1,
+ x:"Fuel tap adalah kran yang membuka/menutup aliran bensin dari tangki menuju karburator; umumnya memiliki posisi ON, OFF, dan RES (cadangan)."},
+{q:"Komponen yang berfungsi mencampur bahan bakar dengan udara menjadi campuran yang mudah terbakar adalah …",
+ o:["Busi","Knalpot","Karburator","Kopling"],a:2,
+ x:"Karburator mencampur bensin dan udara dengan perbandingan tertentu memanfaatkan prinsip venturi."},
+{q:"Perbandingan ideal (stoikiometris) bahan bakar dan udara adalah …",
+ o:["1 : 1","1 : 5","1 : 14,7","1 : 30"],a:2,
+ x:"Secara teori, 1 gram bensin membutuhkan ±14,7 gram udara agar pembakaran berlangsung sempurna."},
+{q:"Saat mesin susah dihidupkan dalam kondisi dingin, komponen karburator yang ditutup untuk memperkaya campuran adalah …",
+ o:["Choke","Pilot jet","Sekrup udara","Pelampung"],a:0,
+ x:"Choke menutup sebagian saluran udara sehingga campuran menjadi kaya (bensin lebih banyak) dan mesin dingin mudah hidup."},
+{q:"Ruang pelampung (float chamber) pada karburator berfungsi …",
+ o:["Menyimpan oli mesin","Menampung cadangan bensin sementara sebelum disemprotkan","Mencampur udara dan bensin","Menyaring kotoran bensin"],a:1,
+ x:"Float chamber menampung bensin dalam jumlah tetap hasil kerja pelampung, siap disalurkan melalui nosel."},
+{q:"Pelampung (float) pada karburator berfungsi …",
+ o:["Mengatur besar kecilnya gas","Menjaga permukaan bensin dalam ruang pelampung tetap konstan","Menyemprotkan bensin ke venturi","Menutup saluran udara utama"],a:1,
+ x:"Pelampung naik-turun mengikuti permukaan bensin dan menggerakkan katup jarum agar tinggi bensin selalu stabil."},
+{q:"Katup jarum (needle valve / float valve) membuka dan menutup aliran bensin karena digerakkan oleh …",
+ o:["Kabel gas","Per klep","Pelampung","Poros engkol"],a:2,
+ x:"Saat pelampung naik karena bensin penuh, jarum menutup saluran; saat bensin berkurang, jarum membuka kembali."},
+{q:"Pilot jet pada karburator melayani aliran bahan bakar saat …",
+ o:["Putaran tinggi","Putaran menengah","Idle / stasioner dan putaran rendah","Mesin dimatikan"],a:2,
+ x:"Pilot jet (slow jet) bertugas menyalurkan bensin saat gas ditutup atau pada putaran rendah."},
+{q:"Main jet pada karburator melayani aliran bahan bakar saat …",
+ o:["Idle / stasioner","Putaran menengah hingga tinggi","Mesin baru distarter","Kunci kontak posisi OFF"],a:1,
+ x:"Saat gas dibuka besar, aliran bensin didominasi oleh main jet yang melayani putaran menengah sampai tinggi."},
+{q:"Jarum skep (jet needle) berfungsi mengatur aliran bahan bakar pada …",
+ o:["Pembukaan gas ¼ sampai ¾ (putaran menengah)","Saat mesin mati","Sistem pengapian saja","Putaran idle saja"],a:0,
+ x:"Bentuk tirus jarum skep mengatur besarnya celah aliran bensin sesuai bukaan skep di putaran menengah."},
+{q:"Sekrup udara (air screw) pada karburator berfungsi …",
+ o:["Mengatur jumlah udara pada kondisi idle","Mengatur volume bensin di tangki","Mengatur celah busi","Mengatur kekencangan rantai"],a:0,
+ x:"Air screw menyetel banyaknya udara yang masuk saat idle agar putaran stasioner mesin halus dan stabil."},
+{q:"Naik turunnya throttle valve / piston skep pada karburator dikendalikan oleh …",
+ o:["Handle gas melalui kabel gas","Poros roda belakang","Pelampung karburator","Sensor ECU"],a:0,
+ x:"Saat handle gas diputar, kabel gas menarik piston skep naik sehingga campuran yang masuk makin banyak dan putaran mesin naik."},
+{q:"Sistem bahan bakar yang jumlah dan waktu penyemprotannya dikontrol secara elektronik adalah …",
+ o:["Sistem pelumasan","Sistem injeksi (EFI)","Sistem pendinginan","Sistem transmisi"],a:1,
+ x:"EFI (Electronic Fuel Injection) memakai sensor dan ECU untuk mengontrol penyemprotan bahan bakar oleh injektor."},
+{q:"Fuel pump pada sistem injeksi berfungsi …",
+ o:["Menyaring bahan bakar","Memompa bensin bertekanan dari tangki menuju injektor","Mendinginkan injektor","Mengukur jumlah bensin"],a:1,
+ x:"Pompa bahan bakar menekan bensin dengan tekanan tertentu agar siap disemprotkan oleh injektor."},
+{q:"Tekanan bahan bakar pada sistem injeksi sepeda motor umumnya sekitar …",
+ o:["0,1 bar","2,5 – 3 bar","10 – 15 bar","50 bar"],a:1,
+ x:"Umumnya ±2,5–3 bar (±294 kPa), cukup untuk menghasilkan kabut bensin halus dari injektor."},
+{q:"Komponen yang menyemprotkan bensin berbentuk kabut ke saluran masuk (intake) adalah …",
+ o:["Injektor","Busi","Koil","Fuel filter"],a:0,
+ x:"Injektor membuka sesuai perintah ECU dan menyemprotkan bensin sebagai kabut halus ke intake manifold."},
+{q:"Throttle body pada motor injeksi berfungsi …",
+ o:["Menyaring udara masuk","Mengatur jumlah udara yang masuk ke mesin melalui katup kupu-kupu","Menyimpan bahan bakar","Mendinginkan mesin"],a:1,
+ x:"Di dalam throttle body terdapat katup kupu-kupu (butterfly valve) yang membuka-menutup sesuai putaran handle gas."},
+{q:"Sensor yang mendeteksi sudut bukaan handle gas adalah …",
+ o:["Sensor suhu mesin (ECT)","TP sensor (Throttle Position Sensor)","Sensor oksigen","Sensor kecepatan roda"],a:1,
+ x:"TP sensor membaca bukaan katup gas dan mengirim datanya ke ECU untuk menentukan suplai bahan bakar."},
+{q:"ECU pada sistem injeksi berfungsi …",
+ o:["Menyimpan bahan bakar cadangan","Mengontrol waktu dan jumlah penyemprotan injektor berdasarkan data sensor","Menghasilkan percikan api busi","Memompa oli mesin"],a:1,
+ x:"ECU (Engine Control Unit) adalah 'otak' yang mengolah data sensor lalu memerintahkan injektor menyemprot."},
+{q:"Komponen yang memercikkan bunga api untuk membakar campuran bensin-udara di ruang bakar adalah …",
+ o:["Busi","Injektor","Karburator","Kampas kopling"],a:0,
+ x:"Busi memercikkan bunga api dari tegangan tinggi koil sehingga campuran terbakar dan menghasilkan tenaga."},
+{q:"Intake manifold adalah saluran yang menghubungkan …",
+ o:["Tangki dengan karburator","Karburator / throttle body dengan kepala silinder","Knalpot dengan mesin","Radiator dengan mesin"],a:1,
+ x:"Intake manifold menyalurkan campuran/udara dari karburator atau throttle body menuju ruang bakar."},
+{q:"Lubang ventilasi kecil pada tutup tangki berfungsi …",
+ o:["Sebagai lubang pengisian bensin","Menjaga tekanan udara dalam tangki tetap seimbang","Sebagai saluran cadangan (RES)","Mendinginkan bensin"],a:1,
+ x:"Ventilasi membuat udara bisa masuk menggantikan bensin yang mengalir keluar, sehingga aliran bensin tetap lancar."},
+{q:"Indikator volume bensin di panel instrumen bekerja berdasarkan sinyal dari …",
+ o:["Pelampung tangki (fuel level sensor)","Busi","Throttle body","Koil pengapian"],a:0,
+ x:"Pelampung di dalam tangki mengubah tinggi permukaan bensin menjadi sinyal listrik menuju indikator di panel."},
+{q:"Apabila saringan bahan bakar tersumbat kotoran, gejala yang terjadi adalah …",
+ o:["Mesin menjadi lebih bertenaga","Suplai bensin terhambat sehingga mesin brebet bahkan mati","Bensin menjadi lebih irit tanpa efek apa pun","Busi menyala lebih terang"],a:1,
+ x:"Saringan yang mampet membuat bensin sulit mengalir; mesin brebet, kehilangan tenaga, bahkan bisa mogok."},
+{q:"Charcoal canister pada motor modern berfungsi …",
+ o:["Menyaring oli mesin","Menyerap uap bensin agar tidak dibuang langsung ke udara","Mendinginkan radiator","Menyimpan udara cadangan"],a:1,
+ x:"Arang aktif dalam canister menyerap uap bensin dari tangki lalu meneruskannya ke ruang bakar — lebih ramah lingkungan."},
+{q:"Sekrup pembuangan (drain screw) di bawah ruang pelampung karburator digunakan untuk …",
+ o:["Menyetel putaran idle","Membuang endapan kotoran/air saat servis karburator","Mengunci tutup tangki","Menambah bensin ke karburator"],a:1,
+ x:"Saat servis, drain screw dibuka untuk menguras bensin beserta endapan kotoran atau air dari float chamber."},
+{q:"Berikut ini yang BUKAN keunggulan sistem injeksi dibanding karburator adalah …",
+ o:["Campuran lebih presisi karena diatur ECU","Emisi gas buang lebih bersih","Konsumsi bahan bakar lebih efisien","Perawatan lebih sederhana tanpa alat khusus"],a:3,
+ x:"Injeksi memang lebih presisi, irit, dan bersih, namun perawatannya memerlukan alat khusus (scanner), berbeda dengan karburator."}
+];
+const TOTAL=30, KM_STEP=2, TMAX=25, L=['A','B','C','D'];
+const $=s=>document.querySelector(s);
+let S=null, timerId=null, smokeId=null, muted=false, audioCtx=null;
+
+/* ================= AUDIO ================= */
+function AC(){try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){}return audioCtx;}
+function beep(f=440,d=.15,type='sine',v=.18,delay=0,fEnd=null){if(muted)return;const c=AC();if(!c)return;
+  const t=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);if(fEnd)o.frequency.exponentialRampToValueAtTime(Math.max(fEnd,20),t+d);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+.03);}
+const sfx={
+  correct(){beep(523,.12,'square',.13);beep(659,.12,'square',.13,.12);beep(784,.22,'square',.13,.24);},
+  wrong(){beep(190,.3,'sawtooth',.18,0,85);beep(120,.45,'sawtooth',.13,.16,55);},
+  vroom(){beep(70,.75,'sawtooth',.2,0,250);beep(95,.75,'square',.09,0,310);},
+  starter(){for(let i=0;i<6;i++)beep(1300,.03,'square',.1,i*.06);beep(80,.6,'sawtooth',.16,.42,230);},
+  tick(){beep(1050,.045,'square',.07);},
+  click(){beep(620,.05,'square',.07);},
+  fanfare(){[523,659,784,1047,784,1047].forEach((n,i)=>beep(n,.18,'square',.14,i*.15));}
+};
+$('#muteBtn').onclick=e=>{muted=!muted;e.target.textContent=muted?'🔇':'🔊';};
+
+/* ================= UTIL ================= */
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const scene=()=>$('#scene');
+function setScene(st){const sc=scene();sc.classList.remove('idle','run','stall','finish');sc.classList.add(st);
+  if(st!=='stall')stopSmoke();}
+
+/* ================= PARTIKEL & EFEK ================= */
+function bikeBox(){const r=$('#bikeRig').getBoundingClientRect(),s=scene().getBoundingClientRect();
+  return {x:r.left-s.left,y:r.top-s.top,w:r.width,h:r.height};}
+function startSmoke(){stopSmoke();smokeId=setInterval(()=>{const b=bikeBox(),p=document.createElement('div');
+  p.className='puff';const sz=10+Math.random()*14;p.style.width=p.style.height=sz+'px';
+  p.style.left=(b.x+b.w*.06)+'px';p.style.top=(b.y+b.h*.68)+'px';$('#fx').appendChild(p);
+  setTimeout(()=>p.remove(),1300);},260);}
+function stopSmoke(){if(smokeId){clearInterval(smokeId);smokeId=null;}}
+function spawnDust(){const b=bikeBox(),d=document.createElement('div');d.className='dust';
+  d.style.left=(b.x+b.w*.12)+'px';d.style.top=(b.y+b.h*.92)+'px';$('#fx').appendChild(d);
+  setTimeout(()=>d.remove(),750);}
+function floater(txt){const f=document.createElement('div');f.className='floater';f.textContent=txt;
+  $('#fx').appendChild(f);setTimeout(()=>f.remove(),1350);}
+function spawnSign(txt){const s=document.createElement('div');s.className='ck-sign';
+  s.innerHTML=`<div class="board">${txt}</div><div class="pole"></div>`;$('#fx').appendChild(s);
+  const dist=scene().offsetWidth+320;
+  s.animate([{transform:'translateX(0)'},{transform:`translateX(-${dist}px)`}],{duration:1350,easing:'linear'})
+   .onfinish=()=>s.remove();}
+function spawnGate(){const g=document.createElement('div');g.className='gate';
+  g.innerHTML=`<div class="banner"><b>🏁 BUKIT KAMPOENG</b></div><div class="posts"><i></i><i></i></div>`;
+  $('#fx').appendChild(g);}
+function confetti(n=90){const cols=['#ffd23f','#ff5d3a','#1f6f8b','#2ecc71','#fffdf5'];
+  for(let i=0;i<n;i++){const c=document.createElement('div');
+    c.style.cssText=`position:fixed;top:-20px;left:${Math.random()*100}vw;width:${7+Math.random()*7}px;
+    height:${12+Math.random()*8}px;background:${cols[i%cols.length]};z-index:500;border-radius:2px;
+    animation:fall ${2.4+Math.random()*2.2}s linear forwards;transform:rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);setTimeout(()=>c.remove(),5200);}
+  if(!document.getElementById('fallKf')){const st=document.createElement('style');st.id='fallKf';
+    st.textContent='@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}';document.head.appendChild(st);}}
+
+/* ================= HUD ================= */
+function buildSegs(){const w=$('#segs');w.innerHTML='';for(let i=0;i<TOTAL;i++)w.appendChild(document.createElement('span'));}
+function updateHUD(){if(!S)return;
+  [...$('#segs').children].forEach((s,i)=>s.classList.toggle('on',i<S.idx));
+  $('#marker').style.left=(S.idx/TOTAL*100)+'%';
+  $('#hBenar').textContent=S.firstTry;$('#hMogok').textContent=S.mogok;
+  $('#hPos').textContent=`${S.idx}/${TOTAL}`;$('#hKm').textContent=S.idx*KM_STEP;
+  const sc=$('#streakChip');
+  if(S.streak>=3){sc.classList.add('show');sc.textContent=`🔥 STREAK x${S.streak}`;}else sc.classList.remove('show');}
+function animateKm(from,to){const t0=performance.now(),dur=1600;
+  (function step(t){const p=Math.min((t-t0)/dur,1);const v=Math.round(from+(to-from)*p);
+    $('#hKm').textContent=v;$('#chipKm').textContent=`KM ${v}/60`;
+    if(p<1)requestAnimationFrame(step);})(t0);}
+
+/* ================= TIMER ================= */
+function startTimer(){stopTimer();S.timeLeft=TMAX;S.lastTick=99;paintTimer();
+  timerId=setInterval(()=>{S.timeLeft-=.1;
+    const ct=Math.ceil(S.timeLeft);
+    if(S.timeLeft<=5&&ct!==S.lastTick&&ct>0){S.lastTick=ct;sfx.tick();}
+    paintTimer();
+    if(S.timeLeft<=0){stopTimer();if(!S.locked){S.locked=true;timeoutFlow();}}},100);}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function paintTimer(){const b=$('#tbar');b.style.width=Math.max(S.timeLeft/TMAX*100,0)+'%';
+  b.classList.toggle('low',S.timeLeft<=10&&S.timeLeft>4);b.classList.toggle('crit',S.timeLeft<=4);}
+
+/* ================= ALUR SOAL ================= */
+function showQuestion(){
+  const q=QUESTIONS[S.idx];S.locked=false;
+  $('#chipPos').textContent=`POS ${S.idx+1}/${TOTAL}`;
+  $('#chipKm').textContent=`KM ${S.idx*KM_STEP}/60`;
+  $('#qText').textContent=q.q;
+  const wrap=$('#opsi');wrap.innerHTML='';
+  shuffle([0,1,2,3]).forEach((qi,slot)=>{
+    const b=document.createElement('button');b.className='opt';b.dataset.qi=qi;
+    b.innerHTML=`<span class="key">${L[slot]}</span><span>${q.o[qi]}</span>`;
+    b.onclick=()=>answer(qi,b);wrap.appendChild(b);});
+  $('#fb').hidden=true;$('#runStrip').hidden=true;$('#qBody').hidden=false;
+  startTimer();
+}
+function answer(qi,btn){
+  if(S.locked)return;S.locked=true;stopTimer();sfx.click();
+  const q=QUESTIONS[S.idx];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const rightBtn=document.querySelector(`.opt[data-qi="${q.a}"]`);
+  if(qi===q.a){btn.classList.add('right');correctFlow(q);}
+  else{btn.classList.add('wrong');rightBtn.classList.add('right');wrongFlow(q,false);}
+}
+function timeoutFlow(){
+  const q=QUESTIONS[S.idx];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.querySelector(`.opt[data-qi="${q.a}"]`)?.classList.add('right');
+  wrongFlow(q,true);
+}
+function correctFlow(q){
+  sfx.correct();S.streak++;if(S.attempts===0)S.firstTry++;updateHUD();floater('+2 KM ✔');
+  showFeedback(true,q,false);
+}
+function wrongFlow(q,timeout){
+  sfx.wrong();S.mogok++;S.streak=0;updateHUD();
+  setScene('stall');startSmoke();
+  showFeedback(false,q,timeout);
+}
+function showFeedback(ok,q,timeout){
+  $('#qBody').hidden=true;const fb=$('#fb');fb.hidden=false;fb.className='fb '+(ok?'ok':'bad');
+  const rightBtn=document.querySelector(`.opt[data-qi="${q.a}"]`);
+  const key=rightBtn?rightBtn.querySelector('.key').textContent:'?';
+  if(ok){
+    $('#fbIc').textContent='✅';
+    $('#fbTitle').textContent=S.attempts===0?'BENAR! MESIN MENYALA':'BENAR! MESIN HIDUP KEMBALI';
+    $('#fbText').textContent=q.x;
+    $('#fbBtn').textContent=S.idx===TOTAL-1?'🏁 GAS KE GARIS FINISH!':`TARIK GAS ▶ POS ${S.idx+2}`;
+    $('#fbBtn').onclick=gasGo;
+  }else{
+    $('#fbIc').textContent='🛠️';
+    $('#fbTitle').textContent=timeout?'⏱ WAKTU HABIS — MESIN MATI!':'MOGOK! JAWABAN SALAH';
+    $('#fbText').innerHTML=`Jawaban yang benar: <b>${key}. ${q.o[q.a]}</b><br>${q.x}`;
+    $('#fbBtn').textContent='🔧 SERVIS & NYALAKAN LAGI';
+    $('#fbBtn').onclick=serviceGo;
+  }
+}
+function gasGo(){
+  $('#fb').hidden=true;$('#runStrip').hidden=false;
+  $('#runStrip').innerHTML=(S.idx===TOTAL-1)?'🏍️💨 Menuju <b style="color:#fff">BUKIT KAMPOENG</b><span class="dots"></span>'
+    :`🏍️💨 Melaju menuju POS ${S.idx+2}<span class="dots"></span>`;
+  setScene('run');sfx.vroom();spawnSign(`POS ${S.idx+1} ✔`);
+  const dustInt=setInterval(spawnDust,130);
+  animateKm(S.idx*KM_STEP,(S.idx+1)*KM_STEP);
+  setTimeout(()=>{clearInterval(dustInt);S.idx++;S.attempts=0;updateHUD();
+    if(S.idx>=TOTAL){finishSeq();}
+    else{setScene('idle');showQuestion();}},1800);
+}
+function serviceGo(){
+  $('#fb').hidden=true;$('#runStrip').hidden=false;
+  $('#runStrip').innerHTML='🔧 Servis cepat… menyalakan mesin<span class="dots"></span>';
+  setScene('idle');sfx.starter();
+  S.attempts++;
+  setTimeout(()=>{showQuestion();},1000);
+}
+function finishSeq(){
+  setTimeout(spawnGate,500);
+  setTimeout(()=>{setScene('finish');sfx.fanfare();confetti(110);},1600);
+  setTimeout(showEnd,3100);
+}
+
+/* ================= FINISH & REKAP ================= */
+function showEnd(){
+  stopTimer();stopSmoke();
+  const wrong=TOTAL-S.firstTry;
+  const secs=Math.floor((Date.now()-S.t0)/1000);
+  const mm=Math.floor(secs/60),ss=String(secs%60).padStart(2,'0');
+  $('#endName').textContent=S.name.toUpperCase()+'!';
+  $('#endWaktu').textContent=`${mm}:${ss}`;
+  $('#endBenar').textContent=`${S.firstTry}/${TOTAL}`;
+  $('#endMogok').textContent=S.mogok;
+  let g,note;
+  if(wrong===0){g='⭐ NILAI 100 — RIDER EMAS';note='Perjalanan sempurna! 30 pos dilibas tanpa sekali pun mogok. Kamu menguasai sistem bahan bakar sepenuhnya!';}
+  else if(wrong<=3){g='NILAI A — SANGAT KOMPETEN';note='Nyaris tanpa cela! Hanya sedikit pos yang membuatmu mogok. Pemahamanmu tentang sistem bahan bakar sangat baik.';}
+  else if(wrong<=8){g='NILAI B — KOMPETEN';note='Perjalanan bagus! Beberapa komponen masih perlu kamu pelajari lagi lewat catatan bengkel di bawah.';}
+  else if(wrong<=14){g='NILAI C — CUKUP KOMPETEN';note='Kamu sampai tujuan, tapi mesin sering mogok. Buka kembali modul sistem bahan bakar, lalu tantang ulang rute ini!';}
+  else{g='NILAI D — PERLU REMEDIAL';note='Banyak komponen yang belum dikuasai. Pelajari kembali materinya dan coba ekspedisi ulang — pasti bisa!';}
+  $('#endGrade').textContent=g;$('#endNote').textContent=note;
+  const rc=$('#recap');rc.innerHTML='';
+  if(S.wrongSet.size===0){
+    rc.innerHTML='<p style="color:#2ecc71;font-weight:700">Tidak ada! Semua soal dijawab benar pada percobaan pertama. 🔥</p>';
+  }else{
+    [...S.wrongSet].forEach(i=>{const q=QUESTIONS[i];
+      const d=document.createElement('div');
+      d.style.cssText='background:#0f2740;border:2px solid #2a4d74;border-radius:12px;padding:.9em 1.1em';
+      d.innerHTML=`<b style="color:#ffd23f">Pos ${i+1}.</b> ${q.q}<br>
+        <span style="color:#2ecc71;font-weight:700">✔ ${L[q.a]}. ${q.o[q.a]}</span><br>
+        <span style="color:#9db6cf;font-size:.9em">${q.x}</span>`;
+      rc.appendChild(d);});
+  }
+  $('#scrGame').classList.remove('active');$('#scrEnd').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ================= INIT & EVENT ================= */
+document.querySelectorAll('.bike-slot').forEach(el=>{el.innerHTML=$('#bikeTpl').innerHTML;});
+$('#tickerTxt').textContent=('TANGKI ★ FUEL FILTER ★ FUEL TAP ★ KARBURATOR ★ FLOAT CHAMBER ★ CHOKE ★ PILOT JET ★ MAIN JET ★ JET NEEDLE ★ THROTTLE VALVE ★ INJEKSI / EFI ★ FUEL PUMP ★ INJEKTOR ★ THROTTLE BODY ★ TP SENSOR ★ ECU ★ BUSI ★ INTAKE MANIFOLD ★ CHARCOAL CANISTER ★ ').repeat(2);
+
+function initGame(name){
+  S={name,idx:0,firstTry:0,mogok:0,streak:0,attempts:0,wrongSet:new Set(),t0:Date.now(),locked:false,timeLeft:TMAX};
+  buildSegs();updateHUD();setScene('idle');$('#fx').innerHTML='';
+  $('#riderName').textContent=name;$('#avatar').textContent=name[0].toUpperCase();
+  $('#scrStart').classList.remove('active');$('#scrEnd').classList.remove('active');
+  $('#scrGame').classList.add('active');
+  AC();sfx.starter();
+  setTimeout(showQuestion,700);
+}
+$('#btnStart').onclick=()=>{AC();initGame(($('#inpName').value.trim()||'RIDER'));};
+$('#inpName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnStart').click();});
+$('#btnReplay').onclick=()=>{sfx.click();$('#scrEnd').classList.remove('active');
+  $('#scrStart').classList.add('active');setScene('idle');$('#fx').innerHTML='';};
+
+document.addEventListener('keydown',e=>{
+  if(!$('#scrGame').classList.contains('active')||!S)return;
+  if(!$('#fb').hidden){if(e.key==='Enter'){$('#fbBtn').click();}return;}
+  if($('#qBody').hidden)return;
+  const map={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3};
+  const k=e.key.toLowerCase();
+  if(k in map){document.querySelectorAll('.opt')[map[k]]?.click();}
+});
+</script>
+</body>
+</html>
