@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainer Instalasi Kelistrikan Body — SMK Kelas X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1319; --panel:#161e27; --panel2:#1c2530; --line:#2c3745; --line2:#3a4756;
+  --ink:#e9eef4; --mut:#93a1b0; --yel:#ffc21d; --org:#ff8b2a; --red:#ff5252;
+  --grn:#3fd680; --blu:#5bc0ff; --lamp:#ffd98a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Barlow',sans-serif; color:var(--ink); min-height:100vh;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(255,194,29,.07), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(91,192,255,.06), transparent 60%),
+    var(--bg);
+  overflow-x:hidden;
+}
+body::before{ /* grid bengkel */
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background:
+    linear-gradient(rgba(70,90,110,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(70,90,110,.10) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse at 50% 30%, #000 40%, transparent 100%);
+}
+#wires{position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:.6}
+#wires .flow{stroke:#ffc21d; opacity:.22; stroke-dasharray:5 14; animation:flow 4s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-190}}
+.app{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:18px 16px 60px}
+
+/* ============ HEADER NAMEPLATE ============ */
+header{display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:14px 0 12px}
+.badge{width:60px;height:60px;flex:0 0 auto;filter:drop-shadow(0 4px 10px rgba(255,194,29,.25))}
+.titleblock h1{
+  font-family:'Bebas Neue'; font-size:clamp(26px,4vw,42px); letter-spacing:2px; line-height:.95;
+  color:var(--ink);
+}
+.titleblock h1 em{font-style:normal;color:var(--yel)}
+.titleblock p{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2.5px; color:var(--mut); margin-top:5px; text-transform:uppercase}
+.hstats{margin-left:auto; display:flex; gap:10px; align-items:stretch; flex-wrap:wrap}
+.readout{
+  background:#0b0f14; border:1px solid var(--line); padding:7px 12px; min-width:110px;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.6);
+}
+.readout small{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;color:#5f6d7c}
+.readout b{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--yel);letter-spacing:1px}
+#sndBtn{cursor:pointer;background:#0b0f14;border:1px solid var(--line);color:var(--mut);
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;padding:7px 12px;transition:.2s}
+#sndBtn:hover{color:var(--yel);border-color:var(--yel)}
+.hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--yel) 0 14px,#141a21 14px 28px);
+  border-top:1px solid #000;border-bottom:1px solid #000;opacity:.9}
+
+/* ============ PROGRESS & COUNTERS ============ */
+.statusbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 2px 4px}
+.segs{display:flex;gap:3px;flex:1;min-width:220px}
+.seg{flex:1;height:9px;background:#1b232d;border:1px solid #10161d;transition:.3s}
+.seg.ok{background:var(--grn);box-shadow:0 0 8px rgba(63,214,128,.7);border-color:var(--grn)}
+.seg.bad{background:var(--red);box-shadow:0 0 8px rgba(255,82,82,.7);border-color:var(--red)}
+.ct{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--mut)}
+.ct b{font-size:16px;color:var(--ink)}
+.ct.lampu b{color:var(--yel)} .ct.sekring b{color:var(--org)}
+.ct svg{display:block}
+
+/* ============ LAYOUT ============ */
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 392px;gap:20px;margin-top:12px}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}}
+
+.panel{
+  position:relative; background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line); box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.panel::before{ /* sekrup sudut */
+  content:''; position:absolute; inset:0; pointer-events:none; background:
+    radial-gradient(circle 3px at 9px 9px, #64707d 0 2px, #1a2129 2.6px, transparent 3.4px),
+    radial-gradient(circle 3px at calc(100% - 9px) 9px, #64707d 0 2px, #1a2129 2.6px, transparent 3.4px),
+    radial-gradient(circle 3px at 9px calc(100% - 9px), #64707d 0 2px, #1a2129 2.6px, transparent 3.4px),
+    radial-gradient(circle 3px at calc(100% - 9px) calc(100% - 9px), #64707d 0 2px, #1a2129 2.6px, transparent 3.4px);
+}
+
+/* ============ KARTU SOAL ============ */
+.qcard{padding:24px 26px 26px}
+.qcard.anim{animation:dealIn .45s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes dealIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.qhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.qno{font-family:'Bebas Neue';font-size:30px;letter-spacing:2px;color:var(--yel)}
+.qno span{color:#55636f;font-size:20px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;padding:5px 11px;border:1px solid; font-weight:700}
+.chip i{width:8px;height:8px;display:inline-block}
+.qtext{font-size:clamp(17px,2.2vw,20px);font-weight:600;line-height:1.55;margin:6px 0 20px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;align-items:center;gap:14px;text-align:left;width:100%;
+  background:#121922;border:1px solid var(--line);padding:13px 16px;cursor:pointer;
+  color:var(--ink);font-family:'Barlow';font-size:16px;font-weight:500;
+  transition:transform .16s, border-color .16s, background .16s;
+}
+.opt .key{
+  flex:0 0 34px;height:34px;display:grid;place-items:center;border-radius:50%;
+  border:2px solid var(--line2);font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--mut);
+  transition:.2s;
+}
+.opt:hover:not(:disabled){transform:translateX(6px);border-color:var(--yel);background:#16202b}
+.opt:hover:not(:disabled) .key{border-color:var(--yel);color:var(--yel)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--grn);background:rgba(63,214,128,.10);animation:popIn .4s}
+.opt.right .key{border-color:var(--grn);background:var(--grn);color:#08130c}
+.opt.wrong{border-color:var(--red);background:rgba(255,82,82,.10);animation:jolt .45s}
+.opt.wrong .key{border-color:var(--red);background:var(--red);color:#1a0505}
+.opt.dim{opacity:.38}
+@keyframes popIn{0%{transform:scale(.97)}55%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes jolt{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.explain{
+  margin-top:18px;border-left:4px solid var(--yel);background:#141c26;padding:14px 16px;
+  animation:slideUp .4s ease;
+}
+.explain b{font-family:'Bebas Neue';letter-spacing:2px;color:var(--yel);font-size:15px}
+.explain p{font-size:14.5px;line-height:1.6;color:#c6d1dc;margin-top:5px}
+.explain.bad{border-color:var(--red)} .explain.bad b{color:var(--red)}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.qfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;flex-wrap:wrap}
+.hint{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#546272}
+.btn{
+  font-family:'Bebas Neue';letter-spacing:2px;font-size:19px;cursor:pointer;border:none;
+  padding:12px 26px;color:#141313;background:linear-gradient(180deg,#ffd44d,var(--yel));
+  box-shadow:0 4px 0 #a37c05, 0 8px 18px rgba(255,194,29,.28); transition:.15s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #a37c05,0 12px 22px rgba(255,194,29,.35)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a37c05}
+.btn.ghost{background:#222d39;color:var(--ink);box-shadow:0 4px 0 #10161d}
+.hidden{display:none !important}
+
+/* ============ TRAINER PANEL ============ */
+.trainer{padding:0 0 8px}
+.phead{
+  display:flex;align-items:center;gap:10px;padding:13px 18px;
+  background:repeating-linear-gradient(-45deg,#1d252f 0 12px,#171e27 12px 24px);
+  border-bottom:1px solid var(--line);
+}
+.phead .led{width:9px;height:9px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blip 1.6s infinite}
+@keyframes blip{0%,100%{opacity:1}50%{opacity:.35}}
+.phead h2{font-family:'Bebas Neue';font-size:19px;letter-spacing:3px}
+.phead span{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--mut)}
+.psec{padding:14px 18px 6px}
+.ptitle{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2.5px;color:#7d8b99;margin:8px 0 12px}
+.ptitle::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* FUSE BOX */
+.fusebox{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 6px;justify-items:center;
+  background:#0d1218;border:1px solid #202a35;padding:16px 10px 12px}
+.fuse{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+.fbody{position:relative;width:27px;height:22px;border-radius:2px;
+  background:linear-gradient(180deg,#ffe9ae,#e59f2f);
+  clip-path:polygon(16% 0,84% 0,100% 100%,0 100%);
+  box-shadow:0 0 8px rgba(255,194,29,.30);transition:.25s}
+.fbody .fil{position:absolute;left:50%;top:4px;width:2px;height:12px;background:#7a4d12;transform:translateX(-50%)}
+.prong{position:absolute;bottom:-6px;width:4px;height:7px;background:#9aa7b4}
+.prong.l{left:6px}.prong.r{right:6px}
+.fuse label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5f6d7c;letter-spacing:.5px;margin-top:4px}
+.fuse.blown .fbody{background:linear-gradient(180deg,#48525d,#272f38);box-shadow:none;animation:fusejolt .45s}
+.fuse.blown .fil{display:none}
+.fuse.blown .crack{position:absolute;left:4px;top:8px;width:19px;height:7px;background:#07090c;
+  clip-path:polygon(0 45%,18% 0,38% 60%,58% 8%,78% 68%,100% 28%,100% 62%,78% 100%,58% 38%,38% 92%,18% 32%,0 82%)}
+.fuse.blown label{color:#ff6b6b;text-decoration:line-through}
+@keyframes fusejolt{0%,100%{transform:translate(0)}25%{transform:translate(-2px,-2px) rotate(-4deg)}50%{transform:translate(2px,1px) rotate(3deg)}75%{transform:translate(-1px,2px)}}
+.spark{position:absolute;left:50%;top:40%;width:5px;height:5px;border-radius:1px;background:#ffd76a;
+  box-shadow:0 0 6px #ffb01f;animation:fly .6s ease-out forwards;pointer-events:none;z-index:5}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+
+/* LAMP BOARD */
+.lamps{display:grid;grid-template-columns:repeat(10,1fr);gap:11px 4px;justify-items:center;
+  background:#0d1218;border:1px solid #202a35;padding:16px 8px 8px;position:relative}
+.lamps::after{content:'';position:absolute;left:14px;right:14px;bottom:5px;height:3px;
+  background:linear-gradient(90deg,transparent,#2f3b49 12%,#2f3b49 88%,transparent)}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:4px}
+.bulb{width:21px;height:21px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#2b3440,#0f141a 72%);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.8),0 0 0 3px #333e4b,0 0 0 4px #161d25;transition:.3s}
+.lamp small{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#556271}
+.lamp.on .bulb{
+  background:radial-gradient(circle at 50% 42%,#fff8dc,#ffd166 48%,#ff9b2a 100%);
+  box-shadow:0 0 0 3px #3d4957,0 0 12px 3px rgba(255,190,60,.8),0 0 26px 9px rgba(255,160,40,.30);
+  animation:bloom .55s cubic-bezier(.2,1.4,.4,1);
+}
+.lamp.on small{color:var(--yel)}
+.lamps.full .lamp.on .bulb{animation:bloom .5s, shine 2.2s ease-in-out infinite}
+@keyframes bloom{0%{transform:scale(.5)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+
+/* SISTEM / SEPEDA MOTOR */
+.sysleds{display:flex;justify-content:space-between;gap:4px;padding:4px 2px 14px;flex-wrap:wrap}
+.sys{display:flex;flex-direction:column;align-items:center;gap:5px;width:62px;text-align:center}
+.sled{width:15px;height:15px;border-radius:50%;background:#141a20;box-shadow:inset 0 1px 3px #000,0 0 0 2px #2b3541;transition:.3s}
+.sys small{font-family:'IBM Plex Mono',monospace;font-size:8px;line-height:1.25;color:#556271;letter-spacing:.5px}
+.sys.on .sled{background:radial-gradient(circle at 45% 40%,#fff8dc,#ffc21d 55%,#ff8b2a);
+  box-shadow:0 0 0 2px #3d4957,0 0 10px rgba(255,194,29,.8);animation:bloom .5s}
+.sys.on small{color:var(--yel)}
+
+/* ============ OVERLAYS ============ */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(6,9,13,.90);backdrop-filter:blur(3px);
+  display:grid;place-items:center;padding:20px;animation:fadeIn .35s}
+@keyframes fadeIn{from{opacity:0}}
+.sheet{max-width:560px;width:100%;background:linear-gradient(180deg,#1d2732,#151d26);
+  border:1px solid var(--line2);padding:34px 34px 30px;position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:8px;
+  background:repeating-linear-gradient(-45deg,var(--yel) 0 14px,#141a21 14px 28px)}
+.sheet h2{font-family:'Bebas Neue';font-size:clamp(30px,5vw,44px);letter-spacing:2px;line-height:1;margin-top:8px}
+.sheet h2 em{font-style:normal;color:var(--yel)}
+.sheet .sub{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2.5px;color:var(--mut);margin-top:6px;text-transform:uppercase}
+.rules{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+.rules li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.5;color:#c9d4df}
+.rules .n{flex:0 0 26px;height:26px;display:grid;place-items:center;border-radius:50%;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;margin-top:1px}
+.rules li:nth-child(1) .n{background:var(--yel);color:#141313}
+.rules li:nth-child(2) .n{background:var(--grn);color:#08130c}
+.rules li:nth-child(3) .n{background:var(--red);color:#1a0505}
+.rules li:nth-child(4) .n{background:var(--blu);color:#06131d}
+.namefield{display:flex;gap:10px;margin:6px 0 18px;flex-wrap:wrap}
+.namefield input{flex:1;min-width:200px;background:#0b0f14;border:1px solid var(--line2);color:var(--ink);
+  font-family:'IBM Plex Mono',monospace;font-size:14px;padding:12px 14px;letter-spacing:1px;outline:none}
+.namefield input:focus{border-color:var(--yel);box-shadow:0 0 0 3px rgba(255,194,29,.15)}
+.bigstats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:22px 0 8px}
+.bigstats .tile{background:#0b0f14;border:1px solid var(--line);padding:12px 6px;text-align:center}
+.tile small{display:block;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#5f6d7c}
+.tile b{font-family:'Bebas Neue';font-size:30px;letter-spacing:1px;color:var(--yel)}
+.gradebadge{margin:14px 0 4px;padding:12px 16px;border:1px dashed var(--line2);text-align:center}
+.gradebadge b{font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;color:var(--yel)}
+.gradebadge p{font-size:13.5px;color:#aeb9c5;margin-top:3px;line-height:1.5}
+.sheet .btn{width:100%;margin-top:16px;font-size:22px;padding:14px}
+#endTitle.win{color:var(--yel)} #endTitle.lose{color:var(--red)}
+.confetto{position:fixed;top:-20px;width:9px;height:14px;z-index:60;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+#flash{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 50% 50%, rgba(255,60,50,.30), rgba(255,60,50,.05) 70%)}
+#flash.go{animation:flashRed .55s ease-out}
+@keyframes flashRed{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+@media(max-width:560px){
+  .bigstats{grid-template-columns:repeat(2,1fr)}
+  .hstats{margin-left:0}
+  .qcard{padding:18px 16px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- dekorasi jalur kabel latar -->
+<svg id="wires" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+  <g fill="none" stroke="#233043" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M-30 130 H 360 L 420 190 H 780 L 840 130 H 1470"/>
+    <path d="M-30 760 H 300 L 370 820 H 900 L 970 760 H 1470"/>
+    <path d="M1180 -30 V 220 L 1260 300 V 560 L 1180 640 V 930"/>
+    <path class="flow" d="M-30 130 H 360 L 420 190 H 780 L 840 130 H 1470" stroke-width="2.5"/>
+    <path class="flow" d="M-30 760 H 300 L 370 820 H 900 L 970 760 H 1470" stroke-width="2.5" style="animation-delay:-2s"/>
+  </g>
+  <g fill="#2c3c52">
+    <circle cx="360" cy="130" r="4"/><circle cx="780" cy="190" r="4"/><circle cx="300" cy="760" r="4"/>
+    <circle cx="900" cy="820" r="4"/><circle cx="1180" cy="220" r="4"/><circle cx="1180" cy="640" r="4"/>
+  </g>
+</svg>
+
+<div id="flash"></div>
+
+<div class="app">
+  <!-- HEADER -->
+  <header>
+    <svg class="badge" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" fill="#141b23" stroke="#ffc21d" stroke-width="3"/>
+      <circle cx="32" cy="32" r="22" fill="none" stroke="#2c3745" stroke-width="1.5" stroke-dasharray="3 5"/>
+      <path d="M36 12 L20 36 h10 l-4 16 18-25 h-11 z" fill="#ffc21d"/>
+    </svg>
+    <div class="titleblock">
+      <h1>TRAINER INSTALASI <em>KELISTRIKAN BODY</em></h1>
+      <p>SMK Kelas X · Teknik & Bisnis Sepeda Motor</p>
+    </div>
+    <div class="hstats">
+      <div class="readout"><small>TEKNISI</small><b id="techName">—</b></div>
+      <div class="readout"><small>WAKTU</small><b id="clock">00:00</b></div>
+      <button id="sndBtn" title="Suara nyala/mati">SUARA: ON</button>
+    </div>
+  </header>
+  <div class="hazard"></div>
+
+  <!-- STATUS -->
+  <div class="statusbar">
+    <div class="ct lampu">
+      <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="7" r="5" fill="#ffc21d"/><rect x="6" y="11" width="4" height="3" fill="#8a6a10"/></svg>
+      LAMPU <b id="lampCt">00/20</b>
+    </div>
+    <div class="segs" id="segs"></div>
+    <div class="ct sekring">
+      <svg width="16" height="14" viewBox="0 0 16 14"><path d="M4 1 h8 l2 12 H2 z" fill="#ff8b2a"/></svg>
+      SEKRING <b id="fuseCt">10/10</b>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- KARTU SOAL -->
+    <main class="panel qcard" id="qcard">
+      <div class="qhead">
+        <div class="qno" id="qno">SOAL 01<span>/20</span></div>
+        <span class="chip" id="chip"><i></i><span id="chipTxt">—</span></span>
+      </div>
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div class="explain hidden" id="explain"></div>
+      <div class="qfoot">
+        <span class="hint">⌨ TEKAN A–D UNTUK MENJAWAB · ENTER UNTUK LANJUT</span>
+        <button class="btn hidden" id="nextBtn">LANJUT ▸</button>
+      </div>
+    </main>
+
+    <!-- TRAINER PANEL -->
+    <aside class="panel trainer">
+      <div class="phead"><span class="led"></span><h2>TRAINER PANEL</h2><span>UNIT-01 · 12V DC</span></div>
+
+      <div class="psec">
+        <div class="ptitle">FUSE BOX · PENGAMAN RANGKAIAN</div>
+        <div class="fusebox" id="fusebox"></div>
+      </div>
+
+      <div class="psec">
+        <div class="ptitle">PANEL INDIKATOR · 20 LAMPU</div>
+        <div class="lamps" id="lamps"></div>
+      </div>
+
+      <div class="psec">
+        <div class="ptitle">SISTEM SEPEDA MOTOR · TIAP 4 JAWABAN BENAR</div>
+        <div class="sysleds" id="sysleds"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- OVERLAY JOB SHEET -->
+<div class="overlay" id="intro">
+  <div class="sheet">
+    <h2>LEMBAR KERJA <em>TEKNISI</em></h2>
+    <div class="sub">Job Sheet · Diagnosa Rangkaian Lampu & Klakson</div>
+    <ul class="rules">
+      <li><span class="n">1</span><span>Selesaikan <b>20 pertanyaan</b> seputar rangkaian & komponen kelistrikan: lampu penerangan, lampu sein, lampu rem, dan klakson.</span></li>
+      <li><span class="n">2</span><span>Setiap jawaban <b style="color:var(--grn)">BENAR</b> menyalakan <b>1 lampu</b> pada trainer instalasi.</span></li>
+      <li><span class="n">3</span><span>Jawaban <b style="color:var(--red)">SALAH</b> membuat <b>1 sekring putus</b> — stok hanya <b>10 sekring</b>. Jika semuanya putus, instalasi mati total!</span></li>
+      <li><span class="n">4</span><span>Jawab <b style="color:var(--yel)">semua dengan benar</b> maka seluruh lampu trainer menyala sempurna. ⚡</span></li>
+    </ul>
+    <div class="namefield">
+      <input id="nameInput" maxlength="18" placeholder="NAMA TEKNISI / SISWA..." autocomplete="off">
+    </div>
+    <button class="btn" id="startBtn" style="width:100%;font-size:22px;padding:14px">MULAI DIAGNOSA ⚡</button>
+  </div>
+</div>
+
+<!-- OVERLAY HASIL -->
+<div class="overlay hidden" id="endov">
+  <div class="sheet" style="text-align:center">
+    <h2 id="endTitle" class="win">DIAGNOSA SELESAI</h2>
+    <div class="sub" id="endSub"></div>
+    <div class="bigstats">
+      <div class="tile"><small>BENAR</small><b id="stCorrect">0</b></div>
+      <div class="tile"><small>LAMPU NYALA</small><b id="stLamps">0</b></div>
+      <div class="tile"><small>SEKRING SISA</small><b id="stFuses">0</b></div>
+      <div class="tile"><small>WAKTU</small><b id="stTime">00:00</b></div>
+    </div>
+    <div class="gradebadge"><b id="gradeName"></b><p id="gradeMsg"></p></div>
+    <button class="btn" id="restartBtn">⟳ ULANGI PELATIHAN</button>
+  </div>
+</div>
+
+<script>
+/* ================= DATA SOAL ================= */
+const CATS={
+  penerangan:{t:'LAMPU PENERANGAN',c:'#ffd166'},
+  sein:{t:'LAMPU SEIN',c:'#ff9b3d'},
+  rem:{t:'LAMPU REM',c:'#ff5f56'},
+  klakson:{t:'KLAKSON',c:'#5bc0ff'},
+  dasar:{t:'DASAR RANGKAIAN',c:'#63d68a'}
+};
+const QUESTIONS=[
+ {c:'penerangan',q:'Komponen yang menjadi sumber energi listrik pada sistem kelistrikan sepeda motor saat mesin belum hidup adalah ...',
+  o:['Generator (spul)','Akumulator (baterai)','Regulator','Flasher'],a:1,
+  i:'Baterai menyimpan energi kimia menjadi energi listrik dan mensuplai seluruh sistem kelistrikan saat mesin belum berputar.'},
+ {c:'dasar',q:'Komponen pengaman yang memutus arus secara otomatis ketika terjadi kelebihan beban atau hubungan singkat adalah ...',
+  o:['Relay','Saklar','Sekring (fuse)','Dioda'],a:2,
+  i:'Kawat di dalam sekring akan meleleh saat arus melebihi kapasitasnya sehingga rangkaian terlindung dari kerusakan bahkan kebakaran.'},
+ {c:'sein',q:'Komponen yang membuat lampu sein berkedip secara berulang adalah ...',
+  o:['Flasher','Relay','Resistor','Kapasitor'],a:0,
+  i:'Flasher memutus–menyambung arus secara periodik sehingga lampu sein berkedip sebagai tanda kendaraan akan berbelok.'},
+ {c:'klakson',q:'Fungsi relay pada rangkaian klakson adalah ...',
+  o:['Menurunkan tegangan baterai','Mengalirkan arus besar ke klakson tanpa melewati saklar','Mengubah arus AC menjadi DC','Menghemat pemakaian baterai'],a:1,
+  i:'Relay mengalirkan arus besar langsung dari baterai ke klakson, sehingga saklar hanya dialiri arus kecil dan awet (tidak cepat gosong).'},
+ {c:'dasar',q:'Sebuah lampu kepala bertuliskan 12 V – 24 W. Besar arus yang mengalir pada lampu tersebut adalah ...',
+  o:['0,5 A','2 A','12 A','288 A'],a:1,
+  i:'Gunakan rumus I = P ÷ V = 24 ÷ 12 = 2 Ampere.'},
+ {c:'dasar',q:'Tegangan standar baterai yang digunakan pada sepeda motor modern adalah ...',
+  o:['1,5 Volt','6 Volt','12 Volt','220 Volt'],a:2,
+  i:'Hampir seluruh sepeda motor modern menggunakan sistem kelistrikan 12 Volt DC.'},
+ {c:'penerangan',q:'Filamen lampu kepala yang digunakan saat berpapasan dengan kendaraan lain agar tidak menyilaukan adalah ...',
+  o:['Lampu jauh (high beam)','Lampu dekat (low beam)','Lampu kota','Lampu hazard'],a:1,
+  i:'Lampu dekat (low beam) memiliki arah cahaya menunduk ke bawah sehingga tidak menyilaukan pengendara dari arah berlawanan.'},
+ {c:'penerangan',q:'Warna lampu indikator lampu jauh (high beam) yang menyala di panel speedometer adalah ...',
+  o:['Merah','Hijau','Biru','Oranye'],a:2,
+  i:'Indikator lampu jauh berwarna biru agar mudah dikenali pengemudi saat lampu jauh aktif.'},
+ {c:'sein',q:'Lampu sein kiri berkedip lebih cepat dari biasanya. Kemungkinan penyebabnya adalah ...',
+  o:['Tegangan baterai terlalu penuh','Salah satu bohlam sein putus','Flasher baru diganti','Ban depan kurang angin'],a:1,
+  i:'Saat salah satu bohlam sein putus atau dayanya tidak sesuai, beban rangkaian mengecil sehingga frekuensi kedip flasher menjadi lebih cepat.'},
+ {c:'sein',q:'Frekuensi kedip lampu sein yang normal adalah sekitar ...',
+  o:['6–12 kali per menit','60–120 kali per menit','300–400 kali per menit','Lebih dari 1.000 kali per menit'],a:1,
+  i:'Standar kedip sein adalah 60–120 kali per menit (kira-kira 1–2 kedipan setiap detik).'},
+ {c:'rem',q:'Komponen yang menghubungkan arus sehingga lampu rem menyala saat tuas rem ditekan adalah ...',
+  o:['Flasher','Saklar rem (brake switch)','Relai starter','Dimmer'],a:1,
+  i:'Saklar rem bekerja secara mekanis/hidrolis: saat tuas atau pedal rem ditekan, kontaknya menutup dan arus mengalir ke lampu rem.'},
+ {c:'rem',q:'Warna lensa lampu rem sesuai standar keselamatan lalu lintas adalah ...',
+  o:['Putih','Kuning','Merah','Hijau'],a:2,
+  i:'Warna merah adalah tanda universal untuk peringatan pengereman / perlambatan, terlihat jelas dari belakang.'},
+ {c:'sein',q:'Warna lensa lampu sein (tanda belok) sesuai standar adalah ...',
+  o:['Oranye / amber','Biru','Putih','Ungu'],a:0,
+  i:'Warna oranye/amber mudah dibedakan dari lampu rem (merah) dan lampu penerangan (putih).'},
+ {c:'klakson',q:'Klakson mengubah energi listrik menjadi energi ...',
+  o:['Panas','Cahaya','Bunyi','Gerak'],a:2,
+  i:'Arus listrik menggetarkan membran/plate di dalam klakson sehingga menghasilkan gelombang suara.'},
+ {c:'dasar',q:'Pada sistem kelistrikan body, rangka logam sepeda motor juga berfungsi sebagai ...',
+  o:['Penghantar arus positif','Massa / ground (jalur kembali arus)','Penguat tegangan','Isolator listrik'],a:1,
+  i:'Kutub negatif baterai dihubungkan ke rangka (body ground), sehingga kabel lebih hemat dan semua komponen mendapat jalur massa yang sama.'},
+ {c:'dasar',q:'Lampu-lampu penerangan pada body sepeda motor dirangkai secara paraler dengan tujuan ...',
+  o:['Menghemat panjang kabel','Jika satu lampu mati, lampu lain tetap menyala','Agar cahaya semakin terang','Agar tegangan baterai naik'],a:1,
+  i:'Rangkaian paralel membuat setiap lampu mendapat tegangan penuh 12 V dan bekerja bebas satu sama lain.'},
+ {c:'dasar',q:'Alat ukur yang tepat untuk memeriksa tegangan baterai sepeda motor adalah ...',
+  o:['Hidrometer','Voltmeter / multitester','Tachometer','Kompresi tester'],a:1,
+  i:'Multitester pada posisi Voltmeter DC dipakai membaca tegangan baterai. Baterai sehat menunjukkan ± 12 Volt atau lebih.'},
+ {c:'dasar',q:'Sekring baru saja diganti, namun langsung putus lagi. Tindakan teknisi yang benar adalah ...',
+  o:['Mengganti dengan sekring berkapasitas lebih besar','Menyambung kabel langsung tanpa sekring','Mencari dan memperbaiki penyebab hubungan singkat','Membiarkan dan tetap memakai motor'],a:2,
+  i:'Sekring putus berulang menandakan ada short circuit. Memperbesar sekring atau menyambung langsung sangat berbahaya karena bisa memicu kebakaran.'},
+ {c:'penerangan',q:'Bohlam lampu kepala sepeda motor memiliki dua filamen. Artinya ...',
+  o:['Satu filamen untuk lampu dekat, satu untuk lampu jauh','Filamen cadangan jika yang satu putus','Agar cahaya bisa putih dan kuning','Untuk menghemat daya baterai'],a:0,
+  i:'Bohlam tipe dual filament (misal HS1) berisi dua kawat pijar: satu untuk lampu dekat dan satu untuk lampu jauh.'},
+ {c:'klakson',q:'Klakson tidak berbunyi saat tombol ditekan, padahal tegangan baterai normal. Pemeriksaan pertama yang paling tepat adalah ...',
+  o:['Mengganti seluruh bodi kabel','Tombol klakson dan kabel menuju klakson','Menambah air aki','Menyetel rantai roda'],a:1,
+  i:'Diagnosa dilakukan bertahap dari yang paling mudah: periksa tombol klakson, lalu kabel, baru kemudian unit klaksonnya.'}
+];
+
+/* ================= UTIL & STATE ================= */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let deck=[],cur=0,correct=0,fuses=10,answered=false,secs=0,timerInt=null,soundOn=true,actx=null;
+const SYS=[{n:'LAMPU DEPAN',th:4},{n:'LAMPU BELAKANG',th:8},{n:'SEIN KIRI',th:12},{n:'SEIN KANAN',th:16},{n:'KLAKSON',th:20}];
+
+/* ================= BUILD DOM ================= */
+const segsEl=$('segs'),segs=[];
+for(let i=0;i<20;i++){const s=document.createElement('i');s.className='seg';segsEl.appendChild(s);segs.push(s);}
+
+const fuseEls=[];
+for(let i=0;i<10;i++){
+  const f=document.createElement('div');f.className='fuse';
+  f.innerHTML=`<div class="fbody"><span class="fil"></span><span class="crack"></span><span class="prong l"></span><span class="prong r"></span></div><label>F${i+1}·10A</label>`;
+  $('fusebox').appendChild(f);fuseEls.push(f);
+}
+const lampEls=[];
+for(let i=0;i<20;i++){
+  const l=document.createElement('div');l.className='lamp';
+  l.innerHTML=`<div class="bulb"></div><small>L${String(i+1).padStart(2,'0')}</small>`;
+  $('lamps').appendChild(l);lampEls.push(l);
+}
+const sysEls=SYS.map(s=>{
+  const d=document.createElement('div');d.className='sys';
+  d.innerHTML=`<span class="sled"></span><small>${s.n}</small>`;
+  $('sysleds').appendChild(d);return d;
+});
+
+/* ================= AUDIO ================= */
+function ac(){if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx;}
+function tone(f,d,type='triangle',v=.16,t=0){if(!soundOn)return;try{const c=ac(),o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+d);
+  o.connect(g);g.connect(c.destination);o.start(c.currentTime+t);o.stop(c.currentTime+t+d+.05);}catch(e){}}
+function noiseBurst(d=.15,v=.2){if(!soundOn)return;try{const c=ac(),b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),ch=b.getChannelData(0);
+  for(let i=0;i<ch.length;i++)ch[i]=(Math.random()*2-1)*(1-i/ch.length);
+  const s=c.createBufferSource(),g=c.createGain();g.gain.value=v;s.buffer=b;
+  const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=1500;
+  s.connect(f);f.connect(g);g.connect(c.destination);s.start();}catch(e){}}
+const sndGood=()=>{tone(660,.1);tone(990,.16,'triangle',.16,.1);};
+const sndBad =()=>{tone(150,.3,'sawtooth',.2);tone(105,.4,'sawtooth',.15,.06);noiseBurst(.18,.25);};
+const sndHorn=()=>{tone(410,.22,'square',.15);tone(410,.3,'square',.15,.3);};
+const sndWin =()=>{[523,659,784,1046].forEach((f,i)=>tone(f,.22,'triangle',.16,i*.14));};
+
+/* ================= GAME ================= */
+function fmt(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');}
+function updCt(){
+  $('lampCt').textContent=String(correct).padStart(2,'0')+'/20';
+  $('fuseCt').textContent=fuses+'/10';
+}
+function buildDeck(){
+  deck=shuffle(QUESTIONS).map(q=>{
+    const idx=shuffle([0,1,2,3]);
+    return {c:q.c,q:q.q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a),i:q.i};
+  });
+}
+function renderQ(){
+  const q=deck[cur];answered=false;
+  const cat=CATS[q.c];
+  $('qno').innerHTML='SOAL '+String(cur+1).padStart(2,'0')+'<span>/20</span>';
+  $('chipTxt').textContent=cat.t;
+  $('chip').style.borderColor=cat.c;$('chip').style.color=cat.c;
+  $('chip').querySelector('i').style.background=cat.c;
+  $('qtext').textContent=q.q;
+  const box=$('opts');box.innerHTML='';
+  q.o.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="key">${'ABCD'[i]}</span><span>${opt}</span>`;
+    b.onclick=()=>pick(i);box.appendChild(b);
+  });
+  $('explain').classList.add('hidden');
+  $('nextBtn').classList.add('hidden');
+  const card=$('qcard');card.classList.remove('anim');void card.offsetWidth;card.classList.add('anim');
+}
+function pick(i){
+  if(answered)return;answered=true;
+  const q=deck[cur],btns=$('opts').children;
+  for(const b of btns)b.disabled=true;
+  if(i===q.a){
+    correct++;btns[i].classList.add('right');
+    for(let k=0;k<btns.length;k++)if(k!==i)btns[k].classList.add('dim');
+    segs[cur].classList.add('ok');
+    lampEls[correct-1].classList.add('on');
+    if(correct===20)$('lamps').classList.add('full');
+    SYS.forEach((s,k)=>{if(correct>=s.th)sysEls[k].classList.add('on');});
+    sndGood();
+    showExplain(false,q.i);
+  }else{
+    btns[i].classList.add('wrong');btns[q.a].classList.add('right');
+    for(let k=0;k<btns.length;k++)if(k!==i&&k!==q.a)btns[k].classList.add('dim');
+    segs[cur].classList.add('bad');
+    blowFuse();
+    showExplain(true,q.i);
+  }
+  updCt();
+  if(fuses===0){
+    $('nextBtn').classList.add('hidden');
+    setTimeout(()=>finish(false),1400);
+  }else{
+    $('nextBtn').classList.remove('hidden');
+    $('nextBtn').textContent=(cur===19)?'LIHAT HASIL DIAGNOSA ▸':'LANJUT ▸';
+  }
+}
+function showExplain(bad,txt){
+  const e=$('explain');
+  e.className='explain'+(bad?' bad':'');
+  e.innerHTML=`<b>${bad?'✕ JAWABAN SALAH — 1 SEKRING PUTUS!':'✓ JAWABAN BENAR — 1 LAMPU MENYALA!'}</b><p><b style="font-family:Barlow;font-size:13px;color:#8fa0b0;letter-spacing:0">PEMBAHASAN — </b>${txt}</p>`;
+}
+function blowFuse(){
+  fuses--;
+  const f=fuseEls[fuses];
+  f.classList.add('blown');
+  for(let k=0;k<9;k++){
+    const s=document.createElement('span');s.className='spark';
+    s.style.setProperty('--dx',(Math.random()*70-35)+'px');
+    s.style.setProperty('--dy',(Math.random()*-60-8)+'px');
+    f.appendChild(s);setTimeout(()=>s.remove(),700);
+  }
+  const fl=$('flash');fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');
+  sndBad();
+}
+$('nextBtn').onclick=()=>{
+  cur++;
+  if(cur>=20){finish(true);return;}
+  renderQ();
+};
+function finish(win){
+  clearInterval(timerInt);timerInt=null;
+  const perfect=win&&correct===20;
+  $('endTitle').className=win?'win':'lose';
+  if(win){
+    $('endTitle').textContent=perfect?'⚡ INSTALASI MENYALA SEMPURNA!':'DIAGNOSA SELESAI';
+    $('endSub').textContent='TRAINER BERHASIL DIHIDUPKAN';
+  }else{
+    $('endTitle').textContent='✕ INSTALASI MATI TOTAL';
+    $('endSub').textContent='SELURUH SEKRING PUTUS';
+  }
+  $('stCorrect').textContent=correct+'/20';
+  $('stLamps').textContent=correct;
+  $('stFuses').textContent=fuses;
+  $('stTime').textContent=fmt(secs);
+  let g,m;
+  if(perfect){g='MASTER INSTALASI ⚡';m='Seluruh 20 lampu menyala tanpa memutus satu sekring pun. Diagnosa sempurna, Teknisi!';}
+  else if(correct>=15){g='KOMPETEN';m='Instalasi berhasil dinyalakan dengan sedikit catatan. Pelajari kembali pembahasan soal yang keliru.';}
+  else if(correct>=10){g='CUKUP KOMPETEN';m='Beberapa rangkaian belum terpasang sempurna. Ulangi materi lampu penerangan, sein, rem & klakson.';}
+  else if(win){g='PERLU LATIHAN ULANG';m='Banyak sekring terbuang. Baca ulang job sheet dan coba lagi, Teknisi!';}
+  else{g='GANGGUAN TOTAL';m='Sekring habis sebelum pemeriksaan selesai. Periksa kembali pemahaman rangkaianmu lalu coba lagi.';}
+  $('gradeName').textContent=g;$('gradeMsg').textContent=m;
+  $('endov').classList.remove('hidden');
+  if(perfect){sndWin();setTimeout(sndHorn,700);confetti();}
+  else if(win){sndWin();}
+}
+function confetti(){
+  const cols=['#ffc21d','#ff8b2a','#3fd680','#5bc0ff','#ffffff','#ff5252'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('span');c.className='confetto';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=cols[Math.floor(Math.random()*cols.length)];
+    c.style.animationDuration=(2.2+Math.random()*2.2)+'s';
+    c.style.animationDelay=(Math.random()*1.2)+'s';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),5200);
+  }
+}
+function startRun(){
+  clearInterval(timerInt);
+  cur=0;correct=0;fuses=10;secs=0;answered=false;
+  segs.forEach(s=>s.className='seg');
+  lampEls.forEach(l=>l.classList.remove('on'));$('lamps').classList.remove('full');
+  fuseEls.forEach(f=>f.classList.remove('blown'));
+  sysEls.forEach(s=>s.classList.remove('on'));
+  buildDeck();renderQ();updCt();
+  $('clock').textContent='00:00';
+  timerInt=setInterval(()=>{secs++;$('clock').textContent=fmt(secs);},1000);
+}
+
+/* ================= INTRO / RESTART / SOUND ================= */
+$('startBtn').onclick=()=>{
+  const n=$('nameInput').value.trim()||'TEKNISI SMK';
+  $('techName').textContent=n.toUpperCase();
+  $('intro').classList.add('hidden');
+  ac();startRun();
+};
+$('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('startBtn').click();});
+$('restartBtn').onclick=()=>{$('endov').classList.add('hidden');startRun();};
+$('sndBtn').onclick=()=>{soundOn=!soundOn;$('sndBtn').textContent='SUARA: '+(soundOn?'ON':'OFF');};
+
+/* keyboard A–D */
+document.addEventListener('keydown',e=>{
+  if(!$('intro').classList.contains('hidden'))return;
+  if(!$('endov').classList.contains('hidden'))return;
+  const k=e.key.toLowerCase();
+  const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  if(!answered&&k in map)pick(map[k]);
+  else if(answered&&e.key==='Enter'&&!$('nextBtn').classList.contains('hidden'))$('nextBtn').click();
+});
+</script>
+</body>
+</html>
