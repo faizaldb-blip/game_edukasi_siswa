@@ -10,6 +10,7 @@ https://faizaldb-blip.github.io/game_edukasi_siswa/game_dsrkelistrikanlampu_smkt
 
 # kuis_kelas_x_tsm_smk
 
+https://faizaldb-blip.github.io/game_edukasi_siswa/kuis_pengelasan_kelas_10_smk.html
 
 # game_kelas_xi_tsm_smk
 
