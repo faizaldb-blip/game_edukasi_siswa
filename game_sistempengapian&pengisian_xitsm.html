@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d1420">
+<title>Touring Listrik ⚡ Gresik → Jogja | Kuis Pengapian & Pengisian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a111c; --panel:#141f30; --panel2:#0f1826; --line:#26374d;
+  --amber:#ffb703; --orange:#fb8500; --red:#ef233c; --green:#2dc653; --cyan:#4cc9f0;
+  --ink:#eef2f7; --mut:#8ea2b8;
+  --hazard:repeating-linear-gradient(-45deg,#ffb703 0 12px,#161b24 12px 24px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Chakra Petch',system-ui,sans-serif;color:var(--ink);background:
+  radial-gradient(120% 90% at 50% 0%,#13202f 0%,#0a111c 55%,#060b12 100%);
+  display:flex;justify-content:center;align-items:center;touch-action:manipulation;overflow:hidden;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.06;
+  background:repeating-linear-gradient(-45deg,#ffb703 0 2px,transparent 2px 26px)}
+#app{position:relative;width:min(520px,100%);height:100vh;height:100dvh;background:var(--panel2);
+  overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:560px){
+  body{padding:18px}
+  #app{height:min(940px,100dvh);border-radius:24px;border:3px solid #223246;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 8px #0c131d}
+}
+.disp{font-family:'Bungee','Chakra Petch',sans-serif;letter-spacing:.5px}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.hidden{display:none!important}
+
+/* ===== SCREENS ===== */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;z-index:2}
+.screen.active{display:flex}
+
+/* ===== START ===== */
+#scrStart{overflow-y:auto;background:linear-gradient(180deg,#0e1826 0%,#0b1220 100%);padding:22px 20px 26px}
+.hzTop{height:10px;background:var(--hazard);margin:-22px -20px 18px;animation:hzMove 1.4s linear infinite}
+@keyframes hzMove{to{background-position:34px 0}}
+.logoKick{font-weight:700;font-size:.8rem;letter-spacing:4px;color:var(--amber)}
+h1.logo{font-family:'Bungee';font-size:clamp(2.1rem,9vw,2.9rem);line-height:.95;color:#fff;
+  text-shadow:3px 3px 0 var(--red),6px 6px 0 rgba(255,183,3,.35);margin:6px 0 4px}
+h1.logo span{color:var(--amber)}
+.routeTag{display:inline-flex;align-items:center;gap:8px;margin:10px 0 2px;font-weight:700;font-size:.82rem;
+  background:#1a2940;border:1px solid var(--line);padding:7px 12px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.routeTag b{color:var(--amber)}
+.blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.15}}
+.sub{color:var(--mut);font-size:.82rem;margin:10px 0 14px;line-height:1.5}
+.sub b{color:#cfdceb}
+.rules{display:flex;flex-direction:column;gap:8px;margin:0 0 16px}
+.rule{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);
+  padding:10px 12px;font-size:.84rem;line-height:1.4;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+.rule .ic{font-size:1.15rem;line-height:1.2}
+.routeMini{font-size:.7rem;letter-spacing:1px;color:var(--mut);margin-bottom:16px;line-height:1.9;word-spacing:2px}
+.routeMini b{color:var(--amber)}
+label.fld{display:block;font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--mut);margin:12px 0 5px}
+input.fld{width:100%;font:600 1rem 'Chakra Petch';color:#fff;background:#0c1522;border:2px solid var(--line);
+  padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s}
+input.fld:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,183,3,.2)}
+.bigBtn{margin-top:20px;width:100%;padding:16px;font-family:'Bungee';font-size:1.05rem;color:#111;
+  background:linear-gradient(180deg,#ffd166,#ffb703);border-bottom:5px solid #b17f00;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  transition:transform .12s,filter .15s}
+.bigBtn:active{transform:scale(.97)}
+.hint{margin-top:12px;text-align:center;font-size:.72rem;color:var(--mut)}
+
+/* ===== RIDE ===== */
+#scrRide{background:var(--panel2)}
+.hud{padding:10px 12px 8px;background:var(--panel);border-bottom:2px solid var(--line)}
+.hudRow{display:flex;align-items:center;gap:8px}
+.hudRow.top{margin-bottom:7px}
+.riderChip{display:flex;align-items:center;gap:6px;background:#1b2b42;border:1px solid var(--line);
+  padding:5px 10px;font-size:.78rem;font-weight:700;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.riderChip b{color:var(--amber);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qCount{margin-left:auto;font-family:'Bungee';font-size:.8rem;color:#fff}
+.iconBtn{font-size:1.05rem;background:#1b2b42;border:1px solid var(--line);width:34px;height:34px;border-radius:8px}
+.chip{font-size:.72rem;font-weight:700;padding:4px 9px;border:1px solid var(--line);background:#101a2a;
+  clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.chip.ok{color:#7ef59a}.chip.bad{color:#ff8fa0}.chip.streak{color:var(--amber);border-color:#7a5a00;animation:pulse .8s ease infinite}
+.chip.km{margin-left:auto;color:#cfe3ff}
+@keyframes pulse{50%{transform:scale(1.08)}}
+
+/* map */
+.mapWrap{padding:9px 14px 7px;background:var(--panel)}
+.mapTrack{position:relative;height:6px;background:#1d2c42;border-radius:3px}
+.mapFill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--orange),var(--amber));border-radius:3px;width:0%;transition:width .3s}
+.mapDot{position:absolute;top:50%;width:9px;height:9px;background:#0b1424;border:2px solid #5a7292;border-radius:50%;transform:translate(-50%,-50%)}
+.mapDot.done{background:var(--amber);border-color:var(--amber)}
+.mapDot.end{width:11px;height:11px;border-color:var(--red)}
+.mapMarker{position:absolute;top:-9px;transform:translateX(-50%);font-size:15px;transition:left .3s;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+.mapLabel{display:flex;justify-content:space-between;font-size:.66rem;font-weight:700;letter-spacing:1px;color:var(--mut);margin-top:6px}
+.mapLabel span:first-child{color:var(--amber)}
+
+/* ===== SCENE ===== */
+.scene{position:relative;height:238px;flex:none;overflow:hidden;border-bottom:3px solid var(--line);
+  background:linear-gradient(var(--skyA,#8ec9ea),var(--skyB,#ffdfae));--m:1}
+.scene[data-state="boost"]{--m:.22}
+.scene[data-state="stalled"] .anim{animation-play-state:paused!important}
+.stars{position:absolute;inset:0 0 55% 0;opacity:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:tw 2.2s ease-in-out infinite}
+@keyframes tw{50%{opacity:.15}}
+.sun,.moon{position:absolute;width:34px;height:34px;border-radius:50%;transition:opacity .5s}
+.sun{background:radial-gradient(circle at 35% 35%,#fff8d6,#ffd166 70%);box-shadow:0 0 26px 8px rgba(255,214,110,.55)}
+.moon{background:radial-gradient(circle at 35% 35%,#fdfdff,#c9d4ea 70%);box-shadow:0 0 18px 4px rgba(200,215,255,.4);opacity:0}
+.cloud{position:absolute;height:16px;width:70px;background:rgba(255,255,255,.8);border-radius:20px}
+.cloud::after{content:"";position:absolute;left:16px;top:-10px;width:34px;height:20px;background:inherit;border-radius:20px}
+.c1{top:22px;animation:cloudMove 46s linear infinite}
+.c2{top:52px;transform:scale(.7);animation:cloudMove 62s linear infinite;animation-delay:-20s;opacity:.7}
+.c3{top:14px;transform:scale(1.2);animation:cloudMove 78s linear infinite;animation-delay:-45s;opacity:.5}
+@keyframes cloudMove{from{transform:translateX(560px)}to{transform:translateX(-160px)}}
+.c2{animation-name:cloudMove2}@keyframes cloudMove2{from{transform:translateX(560px) scale(.7)}to{transform:translateX(-160px) scale(.7)}}
+.c3{animation-name:cloudMove3}@keyframes cloudMove3{from{transform:translateX(560px) scale(1.2)}to{transform:translateX(-160px) scale(1.2)}}
+.hills{position:absolute;left:0;width:200%;height:100px;bottom:74px;background-repeat:repeat-x;background-size:400px 100%}
+.hills.far{opacity:.85;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='100'%3E%3Cpath d='M0 100 L70 34 L130 76 L200 20 L268 70 L330 40 L400 100 Z' fill='%23264a52'/%3E%3C/svg%3E");animation:slideX calc(34s*var(--m)) linear infinite}
+.hills.near{bottom:70px;height:76px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='76'%3E%3Cpath d='M0 76 L60 30 L120 62 L190 18 L260 58 L330 34 L400 76 Z' fill='%231c3f38'/%3E%3C/svg%3E");animation:slideX calc(18s*var(--m)) linear infinite}
+.trees{position:absolute;left:0;bottom:66px;width:200%;height:52px;background-repeat:repeat-x;background-size:160px 100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='52'%3E%3Cg fill='%23132b22'%3E%3Crect x='20' y='24' width='5' height='20'/%3E%3Ccircle cx='22' cy='19' r='11'/%3E%3Crect x='95' y='28' width='4' height='16'/%3E%3Ccircle cx='97' cy='24' r='8'/%3E%3Cpath d='M135 44 l9 -26 9 26z'/%3E%3C/g%3E%3C/svg%3E");
+  animation:slideX calc(8s*var(--m)) linear infinite}
+@keyframes slideX{to{transform:translateX(-50%)}}
+.ground{position:absolute;left:0;right:0;bottom:52px;height:18px;background:var(--field,#7fb457)}
+.road{position:absolute;left:0;right:0;bottom:0;height:54px;background:linear-gradient(#3a4150,#23282f 30%)}
+.road::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:#e8edf4;opacity:.75}
+.roadMark{position:absolute;inset:0;
+  background-image:repeating-linear-gradient(90deg,#ffd75e 0 38px,transparent 38px 70px),
+                   repeating-linear-gradient(90deg,transparent 0 60px,#dfe6f0 60px 65px,#ef233c 65px 70px,transparent 70px 140px);
+  background-size:70px 5px,140px 12px;background-position:0 55%,0 0;background-repeat:repeat-x;
+  animation:bgSlide calc(.9s*var(--m)) linear infinite}
+@keyframes bgSlide{to{background-position-x:-280px,-280px}}
+.bike{position:absolute;left:5%;bottom:12px;width:196px;transform-origin:50% 100%;animation:bob .5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-2px)}}
+.scene[data-state="stalled"] .bike{animation:none;transform:rotate(5deg) translateY(3px)}
+.bike.hop{animation:hop .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes hop{30%{transform:translateY(-9px) rotate(-5deg)}}
+.spokes{transform-box:fill-box;transform-origin:center;animation:spin .5s linear infinite;animation-play-state:paused}
+.scene[data-state="cruise"] .spokes{animation-play-state:running}
+.scene[data-state="boost"] .spokes{animation-duration:.18s;animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+#fx{position:absolute;inset:0;pointer-events:none;z-index:5}
+.smoke{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#9aa4b5,rgba(120,128,142,.05) 70%);animation:puff 1.3s ease-out forwards}
+@keyframes puff{from{opacity:.95;transform:translateY(0) scale(.5)}to{opacity:0;transform:translateY(-52px) scale(2.4)}}
+.floatTxt{position:absolute;font-family:'Bungee';font-size:.95rem;color:var(--amber);text-shadow:2px 2px 0 #7a3800;animation:rise 1.05s ease-out forwards}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.7)}25%{opacity:1}to{opacity:0;transform:translateY(-44px) scale(1.15)}}
+.spd{position:absolute;right:8px;bottom:8px;font-family:'Bungee';font-size:.72rem;color:#cfe3ff;
+  background:rgba(10,16,26,.72);border:1px solid var(--line);padding:5px 9px;z-index:6}
+.spd.bad{color:#ff8fa0;border-color:#5e2030}
+.stamp{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-9deg) scale(0);z-index:7;
+  font-family:'Bungee';font-size:2.6rem;color:var(--red);-webkit-text-stroke:2px #ffd9de;
+  text-shadow:0 4px 0 rgba(0,0,0,.4);opacity:0;pointer-events:none}
+.stamp.show{animation:stampIn 1.15s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) rotate(-9deg) scale(2.4)}18%{opacity:1;transform:translate(-50%,-50%) rotate(-9deg) scale(1)}80%{opacity:1}100%{opacity:0}}
+.flash{position:absolute;inset:0;background:radial-gradient(circle,transparent 30%,rgba(239,35,60,.5));opacity:0;z-index:4;pointer-events:none}
+.flash.on{animation:flashA .5s ease-out}
+@keyframes flashA{from{opacity:1}to{opacity:0}}
+#scrRide.shake{animation:shakeX .45s}
+@keyframes shakeX{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+
+/* ===== QUIZ ===== */
+.quiz{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 14px calc(16px + env(safe-area-inset-bottom))}
+.qcard{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--amber);padding:13px 14px 14px;
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.qcard.pop{animation:cardIn .38s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px)}}
+.qcard.away{opacity:0;transform:translateY(18px);pointer-events:none;transition:.25s}
+.qHead{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.catChip{font-size:.66rem;font-weight:700;letter-spacing:1.5px;padding:4px 10px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.catChip.pengapian{background:#3a2a00;color:var(--amber);border:1px solid #7a5a00}
+.catChip.pengisian{background:#03301f;color:#6ff2a5;border:1px solid #0f7a4d}
+.qNo{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--mut)}
+.qText{font-size:1rem;font-weight:600;line-height:1.45;margin-bottom:12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:48px;padding:9px 10px;
+  font-size:.9rem;font-weight:500;line-height:1.3;color:#dfe9f5;background:#101b2c;border:2px solid #26374d;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  transition:transform .1s,border-color .15s,background .15s}
+.opt:active{transform:scale(.97)}
+.opt .key{flex:none;width:26px;height:26px;display:grid;place-items:center;font-family:'Bungee';font-size:.8rem;
+  color:#0d1420;background:#5a7292;clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.opt.locked{pointer-events:none}
+.opt.ok{background:#0d3a20;border-color:var(--green);color:#c9ffd9}
+.opt.ok .key{background:var(--green)}
+.opt.bad{background:#47121c;border-color:var(--red);color:#ffd3da}
+.opt.bad .key{background:var(--red)}
+.opt.dim{opacity:.45}
+.verdict{margin-top:12px;animation:cardIn .35s ease}
+.vBanner{font-family:'Bungee';font-size:.95rem;padding:10px 12px;display:flex;gap:8px;align-items:center;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.vBanner.good{background:#0d3a20;color:#7ef59a;border:1px solid var(--green)}
+.vBanner.evil{background:#47121c;color:#ff8fa0;border:1px solid var(--red)}
+.noteBox{margin-top:9px;background:#0c1522;border-left:4px solid var(--amber);padding:9px 11px;font-size:.8rem;line-height:1.5;color:#c3d2e4}
+.noteBox b{color:var(--amber);font-size:.68rem;letter-spacing:1.5px;display:block;margin-bottom:3px}
+.cta{margin-top:11px;width:100%;padding:14px;font-family:'Bungee';font-size:.95rem;color:#111;
+  border-bottom:5px solid rgba(0,0,0,.35);transition:transform .12s;
+  clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.cta:active{transform:scale(.97)}
+.cta.go{background:linear-gradient(180deg,#6fe28a,#2dc653)}
+.cta.fix{background:linear-gradient(180deg,#ffd166,#fb8500)}
+.cta.pulse{animation:pulse 1s ease infinite}
+
+/* toast */
+#toast{position:absolute;top:14px;left:50%;transform:translate(-50%,-70px);z-index:50;
+  font-family:'Bungee';font-size:.82rem;background:var(--amber);color:#151002;padding:9px 18px;white-space:nowrap;
+  clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);box-shadow:0 8px 22px rgba(0,0,0,.45);
+  transition:transform .35s cubic-bezier(.2,1.2,.4,1);pointer-events:none}
+#toast.show{transform:translate(-50%,0)}
+
+/* ===== FINISH ===== */
+#scrFinish{overflow-y:auto;background:linear-gradient(180deg,#101c30,#0a1120);padding:0 18px 26px}
+.hzFin{height:10px;background:var(--hazard);margin:0 -18px 20px;animation:hzMove 1.4s linear infinite}
+.finFlag{font-size:2.4rem;text-align:center;animation:wave 1s ease-in-out infinite}
+@keyframes wave{50%{transform:rotate(9deg) translateY(-3px)}}
+h2.finTitle{font-family:'Bungee';text-align:center;font-size:2.2rem;color:#fff;text-shadow:3px 3px 0 var(--red);margin:2px 0}
+.finSub{text-align:center;font-weight:700;color:var(--amber);letter-spacing:2px;font-size:.78rem;margin-bottom:4px}
+.finPerfect{text-align:center;font-weight:700;line-height:1.5;font-size:.9rem;margin:12px 0;padding:12px;
+  border:2px dashed var(--amber);background:rgba(255,183,3,.07)}
+.scoreCard{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);padding:14px;margin:14px 0;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)}
+.nilai{font-family:'Bungee';font-size:3.2rem;color:var(--amber);text-shadow:3px 3px 0 rgba(239,35,60,.5);line-height:1}
+.grade{font-family:'Bungee';font-size:.92rem;line-height:1.3}
+.grade small{display:block;font-family:'Chakra Petch';font-weight:500;color:var(--mut);font-size:.72rem;margin-top:4px;letter-spacing:0}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.stat{background:var(--panel);border:1px solid var(--line);padding:9px 6px;text-align:center}
+.stat b{font-family:'Bungee';font-size:1.05rem;display:block;color:#fff}
+.stat span{font-size:.6rem;letter-spacing:1.5px;color:var(--mut);font-weight:700}
+.condWrap{background:var(--panel);border:1px solid var(--line);padding:10px 12px;margin-bottom:14px}
+.condWrap .lbl{display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--mut);margin-bottom:6px}
+.condBar{height:10px;background:#0c1522;overflow:hidden}
+.condBar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));transition:width 1s ease}
+.bengkelTitle{font-family:'Bungee';font-size:.85rem;color:var(--amber);margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.review{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.rev{background:#101b2c;border:1px solid var(--line);border-left:4px solid var(--red);padding:9px 11px;font-size:.76rem;line-height:1.45}
+.rev.good{border-left-color:var(--green)}
+.rev b{color:#fff}
+.rev .ans{color:#ff9fae}.rev .ansC{color:#7ef59a}
+.finBtns{display:flex;flex-direction:column;gap:9px}
+.secBtn{padding:12px;font-family:'Bungee';font-size:.85rem;background:#1b2b42;color:#dfe9f5;border:2px solid var(--line);
+  clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+#fw{position:absolute;inset:0;pointer-events:none;z-index:5}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ START ============ -->
+  <section class="screen active" id="scrStart">
+    <div class="hzTop"></div>
+    <div class="logoKick">KELAS 11 SMK • TEKNIK SEPEDA MOTOR</div>
+    <h1 class="logo">TOURING<br><span>⚡ LISTRIK</span></h1>
+    <div class="routeTag"><span class="blink">◀</span> GRESIK <b>→</b> YOGYAKARTA • 325 KM <span class="blink">▶</span></div>
+    <p class="sub">Game kuis <b>Perawatan &amp; Perbaikan Kelistrikan</b> — materi <b>Sistem Pengapian &amp; Sistem Pengisian</b>. Kamu adalah ridernya: bawa motormu touring sampai Tugu Jogja!</p>
+    <div class="rules">
+      <div class="rule"><span class="ic">✅</span><span><b>Jawab benar</b> → pengapian sempurna, motor melaju lancar ke kota berikutnya.</span></div>
+      <div class="rule"><span class="ic">❌</span><span><b>Jawab salah</b> → api busi hilang, motor <b>MOGOK</b>! Servis &amp; starter ulang dulu baru bisa lanjut.</span></div>
+      <div class="rule"><span class="ic">🏆</span><span><b>40 soal benar semua</b> → touring sempurna, sampai Jogja tanpa mogok sedikit pun!</span></div>
+    </div>
+    <div class="routeMini">RUTE: <b>GRESIK</b> ▸ LAMONGAN ▸ BOJONEGORO ▸ NGAWI ▸ MADIUN ▸ SOLO ▸ KLATEN ▸ PRAMBANAN ▸ <b>YOGYAKARTA</b></div>
+    <label class="fld" for="inName">NAMA RIDER (SISWA)</label>
+    <input class="fld" id="inName" maxlength="20" placeholder="contoh: Rizky Pratama" autocomplete="off">
+    <label class="fld" for="inClass">KELAS / JURUSAN</label>
+    <input class="fld" id="inClass" maxlength="25" placeholder="contoh: XI TSM 2" autocomplete="off">
+    <button class="bigBtn" id="btnStart">🔑 NYALAKAN MESIN</button>
+    <div class="hint">40 SOAL • 8 ETAPE • Nyalakan speaker untuk suara mesin 🔊</div>
+  </section>
+
+  <!-- ============ RIDE ============ -->
+  <section class="screen" id="scrRide">
+    <div class="hud">
+      <div class="hudRow top">
+        <div class="riderChip">🏍 <b id="hudName">RIDER</b></div>
+        <div class="qCount" id="hudQ">SOAL 1/40</div>
+        <button class="iconBtn" id="btnMute">🔊</button>
+      </div>
+      <div class="hudRow">
+        <span class="chip ok">✔ <b id="hudOk">0</b></span>
+        <span class="chip bad">MOGOK <b id="hudBad">0</b></span>
+        <span class="chip streak hidden" id="hudStreak">⚡×2</span>
+        <span class="chip km" id="hudKm">KM 000/325</span>
+      </div>
+    </div>
+    <div class="mapWrap">
+      <div class="mapTrack" id="mapTrack"><div class="mapFill" id="mapFill"></div><div class="mapMarker" id="mapMarker" style="left:0%">🏍️</div></div>
+      <div class="mapLabel"><span id="mapNext">➜ MENUJU LAMONGAN</span><span>🏁 YOGYAKARTA</span></div>
+    </div>
+
+    <div class="scene" id="scene" data-state="cruise">
+      <div class="stars" id="stars"></div>
+      <div class="sun" id="sun"></div><div class="moon" id="moon"></div>
+      <div class="cloud c1 anim"></div><div class="cloud c2 anim"></div><div class="cloud c3 anim"></div>
+      <div class="hills far anim"></div><div class="hills near anim"></div>
+      <div class="trees anim"></div>
+      <div class="ground" id="ground"></div>
+      <div class="road"><div class="roadMark anim"></div></div>
+
+      <div class="bike anim" id="bike">
+        <svg viewBox="0 0 260 170" width="100%">
+          <polygon class="beam" id="beam" points="204,86 260,64 260,116" fill="#ffdf8a" opacity="0"/>
+          <g>
+            <circle cx="64" cy="124" r="27" fill="#12151c" stroke="#39404f" stroke-width="6"/>
+            <g class="spokes"><line x1="64" y1="102" x2="64" y2="146" stroke="#8b96ad" stroke-width="3"/><line x1="42" y1="124" x2="86" y2="124" stroke="#8b96ad" stroke-width="3"/><line x1="49" y1="109" x2="79" y2="139" stroke="#8b96ad" stroke-width="3"/><line x1="79" y1="109" x2="49" y2="139" stroke="#8b96ad" stroke-width="3"/></g>
+            <circle cx="64" cy="124" r="6" fill="#c8d0e0"/>
+          </g>
+          <g>
+            <circle cx="200" cy="124" r="27" fill="#12151c" stroke="#39404f" stroke-width="6"/>
+            <g class="spokes"><line x1="200" y1="102" x2="200" y2="146" stroke="#8b96ad" stroke-width="3"/><line x1="178" y1="124" x2="222" y2="124" stroke="#8b96ad" stroke-width="3"/><line x1="185" y1="109" x2="215" y2="139" stroke="#8b96ad" stroke-width="3"/><line x1="215" y1="109" x2="185" y2="139" stroke="#8b96ad" stroke-width="3"/></g>
+            <circle cx="200" cy="124" r="6" fill="#c8d0e0"/>
+          </g>
+          <line x1="64" y1="124" x2="118" y2="115" stroke="#4a5568" stroke-width="7" stroke-linecap="round"/>
+          <path d="M118 122 L98 133 L60 135" stroke="#8f99ab" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <rect x="28" y="129" width="36" height="12" rx="6" fill="#c8d0e0" stroke="#7f8aa3" stroke-width="2"/>
+          <rect x="104" y="100" width="54" height="26" rx="6" fill="#33415c"/>
+          <rect x="112" y="91" width="32" height="13" rx="3" fill="#3d4e6e"/>
+          <path d="M92 96 L100 73 L147 65 L171 74 L177 90 L146 101 Z" fill="#1f6fb2"/>
+          <path d="M100 73 L147 65 L151 74 L104 82 Z" fill="#ffb703"/>
+          <path d="M92 96 L76 88 L83 77 L100 73 Z" fill="#1f6fb2"/>
+          <circle cx="79" cy="86" r="3.5" fill="#ef233c"/>
+          <line x1="200" y1="124" x2="183" y2="70" stroke="#c8d0e0" stroke-width="6" stroke-linecap="round"/>
+          <line x1="183" y1="70" x2="177" y2="58" stroke="#4a5568" stroke-width="5" stroke-linecap="round"/>
+          <line x1="167" y1="61" x2="188" y2="57" stroke="#2a3040" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="182" cy="76" r="7" fill="#ffd166" stroke="#e9b23a" stroke-width="2"/>
+          <rect x="98" y="55" width="14" height="21" rx="5" fill="#40916c"/>
+          <path d="M108 85 L116 60 L142 51 L149 62 L122 93 Z" fill="#e4572e"/>
+          <line x1="141" y1="58" x2="175" y2="61" stroke="#e4572e" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="176" cy="61" r="4" fill="#f4c08a"/>
+          <path d="M114 86 L127 106 L142 110" stroke="#26324a" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <circle cx="149" cy="42" r="12" fill="#f6f8fb" stroke="#cfd6e4" stroke-width="2"/>
+          <path d="M150 36 a12 12 0 0 1 11 9 l-12 1 Z" fill="#243b55"/>
+        </svg>
+      </div>
+
+      <div id="fx"></div>
+      <div class="spd" id="spd">LANGSAM</div>
+      <div class="stamp" id="stamp">MOGOK!</div>
+      <div class="flash" id="flash"></div>
+    </div>
+
+    <div class="quiz">
+      <div class="qcard pop" id="qcard">
+        <div class="qHead">
+          <span class="catChip pengapian" id="catChip">⚡ SISTEM PENGAPIAN</span>
+          <span class="qNo" id="qNo">SOAL 1/40</span>
+        </div>
+        <div class="qText" id="qText"></div>
+        <div class="opts" id="opts"></div>
+        <div id="verdict" class="hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINISH ============ -->
+  <section class="screen" id="scrFinish">
+    <canvas id="fw"></canvas>
+    <div style="overflow-y:auto;padding:0 0 10px">
+      <div class="hzFin"></div>
+      <div class="finFlag">🏁</div>
+      <h2 class="finTitle">FINISH!</h2>
+      <div class="finSub" id="finSub">TUGU JOGJA — YOGYAKARTA</div>
+      <div class="finPerfect hidden" id="finPerfect"></div>
+      <div class="scoreCard">
+        <div class="nilai" id="finNilai">100</div>
+        <div class="grade" id="finGrade"></div>
+      </div>
+      <div class="statGrid">
+        <div class="stat"><b id="stBenar">0</b><span>BENAR</span></div>
+        <div class="stat"><b id="stMogok">0</b><span>MOGOK</span></div>
+        <div class="stat"><b id="stAkurasi">0%</b><span>AKURASI</span></div>
+        <div class="stat"><b id="stKombo">0</b><span>KOMBO MAX</span></div>
+        <div class="stat"><b id="stWaktu">0:00</b><span>WAKTU</span></div>
+        <div class="stat"><b>325</b><span>KM DITEMPUH</span></div>
+      </div>
+      <div class="condWrap">
+        <div class="lbl"><span>⚙ KONDISI PENGAPIAN MOTOR</span><span id="condPct">100%</span></div>
+        <div class="condBar"><i id="condBar" style="width:100%"></i></div>
+      </div>
+      <div class="bengkelTitle">🔧 CATATAN BENGKEL</div>
+      <div class="review" id="review"></div>
+      <div class="finBtns">
+        <button class="bigBtn" style="margin-top:0" id="btnAgain">🔁 TOURING ULANG</button>
+        <button class="secBtn" id="btnHome">🏠 GANTI RIDER</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ================= DATA SOAL (40) =================
+   c: 0=Pengapian, 1=Pengisian | a: index jawaban benar */
+const QBANK=[
+{c:0,q:"Fungsi utama sistem pengapian pada sepeda motor bensin adalah…",o:["Menyalurkan bahan bakar ke ruang bakar","Menghasilkan percikan bunga api tegangan tinggi untuk membakar campuran bahan bakar-udara","Memadatkan campuran bahan bakar-udara","Mendinginkan mesin saat rpm tinggi"],a:1,n:"Sistem pengapian bertugas memercikkan bunga api di busi pada saat yang tepat agar campuran bahan bakar-udara terbakar."},
+{c:0,q:"Komponen sistem pengapian yang menaikkan tegangan dari 12 V menjadi ±10.000 V atau lebih adalah…",o:["Busi","CDI unit","Koil pengapian (ignition coil)","Kiprok"],a:2,n:"Koil pengapian adalah trafo step-up yang menaikkan tegangan hingga ribuan volt agar api bisa meloncat di celah busi."},
+{c:0,q:"Prinsip kerja koil pengapian didasarkan pada…",o:["Induksi elektromagnetik antara kumparan primer dan sekunder","Gesekan antar kontak platina","Efek piezoelektrik pada kristal","Resonansi gelombang radio"],a:0,n:"Saat arus primer diputus tiba-tiba, perubahan medan magnet menginduksi tegangan sangat tinggi pada kumparan sekunder."},
+{c:0,q:"Komponen yang mengubah energi listrik tegangan tinggi menjadi loncatan bunga api adalah…",o:["Busi","Pulser coil","Regulator tegangan","Kunci kontak"],a:0,n:"Busi meloncatkan bunga api di celah elektrodanya tepat di dalam ruang bakar."},
+{c:0,q:"Celah elektroda busi standar sepeda motor umumnya berukuran…",o:["0,6 – 0,8 mm","1,5 – 2,0 mm","2,5 – 3,0 mm","0,1 – 0,2 mm"],a:0,n:"Celah standar umumnya 0,6–0,8 mm. Celah yang tidak tepat membuat pengapian tidak sempurna."},
+{c:0,q:"Kepanjangan CDI pada sistem pengapian adalah…",o:["Current Direct Ignition","Charge Distribution Indicator","Central Digital Ignition","Capacitor Discharge Ignition"],a:3,n:"CDI = Capacitor Discharge Ignition, pengapian yang bekerja dari pelepasan muatan kapasitor."},
+{c:0,q:"Fungsi utama unit CDI adalah…",o:["Mengubah arus AC menjadi DC","Menyimpan lalu melepaskan muatan kapasitor ke kumparan primer koil pada saat yang tepat","Menaikkan tegangan menjadi 10.000 V","Membatasi tegangan pengisian"],a:1,n:"CDI berperan sebagai saklar elektronik yang menentukan kapan muatan kapasitor dilepaskan ke koil."},
+{c:0,q:"Komponen yang membaca posisi piston lalu mengirim sinyal waktu pengapian ke CDI adalah…",o:["Pulser coil (pick-up coil)","Kumparan stator pengisian","Kiprok","Sekring"],a:0,n:"Pulser membaca tonjolan timing pada flywheel dan mengirim sinyal pemicu ke CDI."},
+{c:0,q:"Pada sistem pengapian konvensional, pemutus arus primer dilakukan oleh…",o:["Transistor","Dioda","Kondensator","Kontak pemutus (breaker point / platina)"],a:3,n:"Pengapian konvensional memakai kontak platina yang membuka-menutup secara mekanis."},
+{c:0,q:"Keunggulan utama pengapian CDI dibanding pengapian platina adalah…",o:["Tidak ada kontak yang aus, timing tetap presisi hingga rpm tinggi","Komponennya jauh lebih murah","Tidak memerlukan sumber listrik sama sekali","Busi menjadi tahan selamanya"],a:0,n:"Karena tanpa kontak gesek, CDI bebas aus dan apinya stabil sampai putaran tinggi."},
+{c:0,q:"Akibat yang terjadi jika saat pengapian terlalu maju (advanced) adalah…",o:["Mesin lebih mudah distarter","Konsumsi bahan bakar lebih irit","Mesin mengelitik (detonasi / ngelitik)","Suara knalpot lebih halus"],a:2,n:"Api terlalu dini menyebabkan knocking yang menurunkan tenaga dan dapat merusak piston."},
+{c:0,q:"Akibat yang terjadi jika saat pengapian terlalu mundur (retarded) adalah…",o:["Mesin lebih bertenaga","Koil pengapian lebih awet","Aki lebih cepat terisi","Mesin cepat panas dan tenaganya turun"],a:3,n:"Pembakaran berlanjut sampai langkah buang sehingga mesin panas berlebih dan boros."},
+{c:0,q:"Jumlah lilitan kumparan sekunder koil pengapian dibandingkan kumparan primer adalah…",o:["Lebih sedikit","Lebih banyak ratusan kali lipat","Hampir sama","Koil tidak memiliki kumparan sekunder"],a:1,n:"Sekunder memiliki ribuan lilitan (±100× primer) sehingga tegangan induksinya sangat besar."},
+{c:0,q:"Komponen penyimpan energi listrik sesaat pada sistem pengapian CDI adalah…",o:["Resistor","Sekring","Kapasitor (kondensator)","Relai"],a:2,n:"Kapasitor menampung muatan dan melepaskannya seketika ke kumparan primer koil."},
+{c:0,q:"Fungsi kondensator pada pengapian konvensional adalah…",o:["Menaikkan tekanan bahan bakar","Menyerap bunga api dan mempercepat pemutusan arus primer","Mendinginkan platina","Menyalakan lampu sein"],a:1,n:"Kondensator mencegah bunga api di celah platina sehingga kontak awet dan pemutusan arus cepat."},
+{c:0,q:"Sistem pengapian TCI memutus arus primer menggunakan…",o:["Platina","Kondensator","Transistor daya","Dinamo starter"],a:2,n:"TCI (Transistor Controlled Ignition) memakai transistor sebagai saklar elektronik arus primer."},
+{c:0,q:"Sepeda motor tetap bisa hidup tanpa aki karena sistem pengapiannya menggunakan…",o:["Injeksi bahan bakar","Turbocharger","Baterai kering","Magnit (flywheel magneto) / pengapian AC"],a:3,n:"Kumparan sumber di bawah magnet membangkitkan listrik sendiri, ciri khas sistem magneto."},
+{c:0,q:"Fungsi source coil (spull pengapian) pada sistem pengapian AC adalah…",o:["Menyuplai arus sumber pengapian pada sistem AC","Mengisi aki saat mesin hidup","Mengubah arus AC menjadi DC","Menggerakkan motor starter"],a:0,n:"Source coil menghasilkan arus bolak-balik sebagai sumber pengapian saat magnet berputar."},
+{c:0,q:"Dampak celah busi yang terlalu besar adalah…",o:["Api selalu lebih besar dan kuat","Api sulit meloncat, terutama pada rpm tinggi","Saat pengapian menjadi lebih maju","Mesin lebih halus di putaran bawah"],a:1,n:"Celah lebar membutuhkan tegangan loncat lebih tinggi sehingga rawan gagal pengapian di rpm tinggi."},
+{c:0,q:"Ujung elektroda busi tampak hitam kering. Penyebab yang paling mungkin adalah…",o:["Saat pengapian terlalu maju","Celah busi terlalu rapat","Campuran bahan bakar terlalu kaya atau oli ikut terbakar","Konsumsi bahan bakar terlalu irit"],a:2,n:"Kerak hitam kering menandakan campuran kaya; jika basah berarti oli ikut masuk ruang bakar."},
+{c:1,q:"Fungsi sistem pengisian pada sepeda motor adalah…",o:["Menstabilkan putaran stasioner mesin","Mengisi kembali aki dan melayani kebutuhan listrik saat mesin hidup","Menaikkan tegangan ke busi","Mendinginkan mesin"],a:1,n:"Sistem pengisian mengisi ulang aki sekaligus melayani beban listrik selama mesin hidup."},
+{c:1,q:"Komponen yang membangkitkan listrik arus bolak-balik saat mesin berputar adalah…",o:["Busi","CDI","Klakson","Alternator (kumparan stator dan magnet)"],a:3,n:"Alternator terdiri dari magnet yang berputar dan kumparan stator yang membangkitkan listrik AC."},
+{c:1,q:"Rectifier-regulator pada sepeda motor biasa disebut bengkel dengan nama…",o:["Karburator","Pulser","Kiprok","Kampas kopling"],a:2,n:"Kiprok adalah sebutan umum untuk unit rectifier/regulator."},
+{c:1,q:"Fungsi bagian penyearah (rectifier) pada kiprok adalah…",o:["Menaikkan tegangan menjadi 220 V","Mengubah arus AC menjadi arus DC","Membangkitkan medan magnet","Memutus arus motor starter"],a:1,n:"Dioda pada rectifier menyearahkan arus AC dari alternator menjadi DC untuk mengisi aki."},
+{c:1,q:"Fungsi voltage regulator pada sistem pengisian adalah…",o:["Membatasi dan mengatur tegangan pengisian aki agar tetap ±14–15 V","Menstabilkan putaran stasioner","Mengatur jumlah bahan bakar","Menyerap panas mesin"],a:0,n:"Regulator menjaga tegangan pengisian tidak berlebihan sehingga aki aman."},
+{c:1,q:"Tegangan pengisian normal pada terminal aki saat mesin digas ±5.000 rpm adalah…",o:["5 – 6 V","8 – 9 V","14 – 15 V","24 – 30 V"],a:2,n:"Tegangan pengisian sehat berada di kisaran 14–15 V, sedikit di atas tegangan aki 12 V."},
+{c:1,q:"Dampak tegangan pengisian terlalu tinggi (overcharge) adalah…",o:["Air aki mendidih dan aki cepat rusak","Aki justru lebih awet","Pengisian menjadi lebih efisien","Lampu menjadi redup"],a:0,n:"Overcharge membuat elektrolit mendidih, sel aki rusak, bahkan aki bisa mengembung."},
+{c:1,q:"Jika tegangan pengisian lebih rendah dari standar, akibatnya adalah…",o:["Aki terisi terlalu penuh","Api busi membesar","Mesin cepat panas","Aki cepat tekor dan lampu-lampu redup"],a:3,n:"Pengisian kurang membuat aki terus kehilangan daya (tekor) dan penerangan melemah."},
+{c:1,q:"Fungsi utama aki (baterai) pada sepeda motor adalah…",o:["Membangkitkan percikan api busi","Memutar poros engkol secara langsung","Menyimpan energi listrik untuk starter, lampu, dan pengapian","Menyaring kotoran oli"],a:2,n:"Aki menyimpan energi listrik kimia dan melepaskannya saat dibutuhkan."},
+{c:1,q:"Berat jenis elektrolit aki yang terisi penuh adalah sekitar…",o:["1,000","1,260 – 1,280","1,100","1,500"],a:1,n:"Diukur dengan hidrometer, aki penuh menunjukkan berat jenis ±1,260–1,280 pada 20°C."},
+{c:1,q:"Perbedaan sistem pengisian full wave (gelombang penuh) dengan half wave adalah…",o:["Gelombang penuh lebih boros komponen sehingga lebih buruk","Gelombang penuh tidak membutuhkan dioda","Gelombang penuh menyearahkan kedua siklus sehingga arus pengisian lebih besar dan stabil","Keduanya menghasilkan pengisian yang sama"],a:2,n:"Full wave memanfaatkan dua siklus gelombang AC sehingga pengisiannya lebih besar dan stabil."},
+{c:1,q:"Tegangan standar aki sepeda motor masa kini adalah…",o:["6 V","12 V","1,5 V","48 V"],a:1,n:"Sepeda motor modern memakai aki 12 V (motor klasik tertentu memakai 6 V)."},
+{c:1,q:"Komponen alternator yang berputar bersama poros engkol dan menghasilkan medan magnet adalah…",o:["Stator","Kiprok","Sekring","Flywheel / magnet (rotor)"],a:3,n:"Flywheel berisi magnet permanen yang berputar mengelilingi kumparan stator."},
+{c:1,q:"Gejala kumparan stator pengisian yang terbakar adalah…",o:["Aki selalu tekor walaupun sudah diisi ulang","Api busi membesar","Klakson bersuara lebih nyaring","Lampu semakin terang"],a:0,n:"Stator rusak membuat alternator tidak lagi membangkitkan listrik, akibatnya aki selalu tekor."},
+{c:1,q:"Cara pemeriksaan sistem pengisian yang benar adalah…",o:["Mencium bau air aki","Menyemprotkan pembersih karburator","Mengukur tegangan aki saat langsam lalu digas, harus naik ke ±14–15 V","Mengukur tekanan angin ban"],a:2,n:"Gunakan multimeter: tegangan harus naik dari ±12 V menjadi 14–15 V saat rpm dinaikkan."},
+{c:1,q:"Jika kiprok rusak, dampaknya terhadap aki adalah…",o:["Tidak ada pengaruh apa pun","Overcharge atau tidak mengisi sama sekali sehingga aki cepat rusak","Aki justru terisi lebih penuh","Busi menjadi lebih awet"],a:1,n:"Regulator mati bisa membuat tegangan tak dibatasi (overcharge) atau pengisian berhenti total."},
+{c:1,q:"Saat mesin mati (parkir), kebutuhan listrik sepeda motor dipasok oleh…",o:["Alternator","CDI","Pulser","Aki (baterai)"],a:3,n:"Alternator hanya bekerja saat mesin hidup; ketika mati, aki mengambil alih."},
+{c:1,q:"Alat ukur yang menampilkan tegangan sistem pengisian pada panel instrumen adalah…",o:["Tachometer","Voltmeter","Odometer","Speedometer"],a:1,n:"Voltmeter menampilkan tegangan sistem sehingga kondisi pengisian mudah dipantau."},
+{c:1,q:"Sepeda motor sering tekor padahal aki baru. Penyebab paling mungkin adalah…",o:["Tekanan ban kurang","Celah busi standar","Sistem pengisian bermasalah (spull / kiprok)","Filter udara kotor"],a:2,n:"Aki baru yang tetap tekor menandakan pengisian tidak bekerja — periksa spull dan kiprok."},
+{c:1,q:"Perawatan aki basah yang benar adalah…",o:["Menambah oli mesin ke dalam sel aki","Mengisi air aki sampai meluap","Membiarkan level air aki tanpa diperiksa","Menambah air suling/air zuur sesuai batas serta membersihkan terminal"],a:3,n:"Isi sesuai batas upper-lower dengan air suling dan jaga terminal bebas kerak."}
+];
+
+const CITIES=[{n:"GRESIK",km:0},{n:"LAMONGAN",km:23},{n:"BOJONEGORO",km:70},{n:"NGAWI",km:122},{n:"MADIUN",km:158},{n:"SOLO",km:255},{n:"KLATEN",km:287},{n:"PRAMBANAN",km:305},{n:"YOGYAKARTA",km:325}];
+const TOTAL=325, NSOAL=40, KEYS=["A","B","C","D"];
+const CHEER=["GASPOL! ⚡","MANTAP! 🔥","JOSS! 💨","SIIIP! ⚡","NGEBRUUUT! 💨"];
+
+/* ================= UTIL ================= */
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function hexToRgb(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]}
+function mixHex(h1,h2,t){const a=hexToRgb(h1),b=hexToRgb(h2);return`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')})`}
+function sample(stops,p,get){
+  if(p<=stops[0][0])return get(stops[0]);
+  for(let i=0;i<stops.length-1;i++){
+    if(p<=stops[i+1][0]){const t=(p-stops[i][0])/(stops[i+1][0]-stops[i][0]);
+      return mixHex(get(stops[i]),get(stops[i+1]),t)}
+  } return get(stops[stops.length-1]);
+}
+function kmAt(answered){
+  const t=answered/NSOAL*8, s=Math.min(7,Math.floor(t)), f=t-s;
+  return CITIES[s].km+(CITIES[s+1].km-CITIES[s].km)*f;
+}
+
+/* ================= AUDIO ================= */
+const AudioFX={ctx:null,muted:false,
+ init(){if(!this.ctx){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+   if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
+ tone(f0,f1,dur,type,vol,delay=0){if(!this.ctx||this.muted)return;
+   const t=this.ctx.currentTime+delay,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+   o.type=type;o.frequency.setValueAtTime(f0,t);
+   o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),t+dur);
+   g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+   o.connect(g).connect(this.ctx.destination);o.start(t);o.stop(t+dur+.03)},
+ click(){this.tone(320,180,.07,'square',.05)},
+ starter(){this.tone(70,170,.55,'sawtooth',.12);this.tone(46,95,.5,'square',.07,.06)},
+ correct(){this.tone(660,660,.09,'square',.11);this.tone(990,990,.13,'square',.11,.1);this.tone(85,230,.7,'sawtooth',.11,.05)},
+ wrong(){for(let k=0;k<6;k++)this.tone(150-k*16,55,.09,'sawtooth',.13,k*.09);this.tone(80,28,.5,'square',.12,.56)},
+ horn(){this.tone(440,430,.12,'square',.11);this.tone(440,430,.12,'square',.11,.18)},
+ finish(){[523,659,784,1046].forEach((f,k)=>this.tone(f,f,.19,'square',.11,k*.15))}
+};
+
+/* ================= STATE ================= */
+const S={name:"RIDER SMK",order:[],i:0,correct:0,wrong:0,streak:0,maxStreak:0,wrongList:[],start:0,answered:false,busy:false,lastOk:true,curKm:0};
+
+/* ================= SCENE / ATMOSPHERE ================= */
+const scene=$('scene');
+const SKY=[[0,'#8ec9ea','#ffdfae'],[.22,'#4fa8dd','#cfeef8'],[.5,'#3f9ad6','#dff3fa'],[.68,'#5f5d9e','#ffb168'],[.82,'#33305f','#e0705a'],[1,'#0b1026','#26335e']];
+const FIELD=[[0,'#7fb457'],[.5,'#74ad4e'],[.72,'#6d8a44'],[.85,'#3f5d38'],[1,'#233c2c']];
+(function makeStars(){const st=$('stars');for(let i=0;i<26;i++){const s=document.createElement('span');
+  s.className='star';const z=1+Math.random()*1.6;
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;animation-delay:${Math.random()*2}s`;
+  st.appendChild(s)}})();
+
+function atmosphere(p){
+  scene.style.setProperty('--skyA',sample(SKY,p,s=>s[1]));
+  scene.style.setProperty('--skyB',sample(SKY,p,s=>s[2]));
+  scene.style.setProperty('--field',sample(FIELD,p,s=>s[1]));
+  const sun=$('sun'),moon=$('moon'),st=$('stars'),beam=$('beam');
+  const arc=Math.sin(Math.PI*clamp(p/.82,0,1));
+  sun.style.left=(6+p*78)+'%'; sun.style.top=(46-arc*36)+'px';
+  sun.style.opacity=p<.68?1:clamp(1-(p-.68)/.12,0,1);
+  const nf=clamp((p-.72)/.16,0,1);
+  moon.style.left=(12+(p-.72)*180)+'%'; moon.style.top=(20-nf*6)+'px'; moon.style.opacity=nf;
+  st.style.opacity=clamp((p-.72)/.2,0,1);
+  beam.setAttribute('opacity',(nf*.4).toFixed(2));
+}
+
+/* ================= HUD / MAP ================= */
+const mapTrack=$('mapTrack');
+CITIES.forEach((c,idx)=>{const d=document.createElement('div');
+  d.className='mapDot'+(idx===CITIES.length-1?' end':'');d.style.left=(c.km/TOTAL*100)+'%';
+  d.title=c.n;mapTrack.insertBefore(d,$('mapMarker'))});
+
+function updateHUD(){
+  $('hudOk').textContent=S.correct;$('hudBad').textContent=S.wrong;
+  $('hudQ').textContent=`SOAL ${Math.min(S.i+1,NSOAL)}/${NSOAL}`;
+  const st=$('hudStreak');
+  if(S.streak>=2){st.classList.remove('hidden');st.textContent=`⚡×${S.streak}`}else st.classList.add('hidden');
+  const nc=Math.min(8,Math.floor(S.i/5)+1);
+  $('mapNext').textContent=S.i>=NSOAL?'🏁 FINISH':`➜ MENUJU ${CITIES[nc].n}`;
+}
+function setKm(km){
+  S.curKm=km;const pct=km/TOTAL*100;
+  $('hudKm').textContent=`KM ${String(Math.round(km)).padStart(3,'0')}/325`;
+  $('mapFill').style.width=pct+'%';$('mapMarker').style.left=pct+'%';
+  CITIES.forEach((c,idx)=>{const d=mapTrack.children[idx];if(d.classList.contains('mapDot'))d.classList.toggle('done',km>=c.km&&idx>0)});
+  atmosphere(pct/100);
+}
+function setSpeed(t,bad){const e=$('spd');e.classList.toggle('bad',!!bad);e.textContent=t}
+setInterval(()=>{if(!$('scrRide').classList.contains('active')||S.busy)return;
+  if(scene.dataset.state==='cruise')setSpeed((40+Math.round(Math.random()*8))+' KM/J');
+},700);
+
+/* ================= FX ================= */
+function toast(msg,ms=1800){const t=$('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),ms)}
+function floatFx(txt){const f=document.createElement('div');f.className='floatTxt';
+  f.textContent=txt;f.style.left=(28+Math.random()*34)+'%';f.style.bottom='96px';
+  $('fx').appendChild(f);f.addEventListener('animationend',()=>f.remove())}
+function smoke(n){for(let k=0;k<n;k++){setTimeout(()=>{const s=document.createElement('div');
+  s.className='smoke';s.style.left=(5+Math.random()*7)+'%';s.style.bottom=(34+Math.random()*18)+'px';
+  $('fx').appendChild(s);s.addEventListener('animationend',()=>s.remove())},k*130)}}
+
+/* ================= QUIZ ================= */
+function renderQuestion(){
+  const q=QBANK[S.order[S.i]];
+  $('catChip').className='catChip '+(q.c?'pengisian':'pengapian');
+  $('catChip').textContent=q.c?'🔋 SISTEM PENGISIAN':'⚡ SISTEM PENGAPIAN';
+  $('qNo').textContent=`SOAL ${S.i+1}/${NSOAL}`;
+  $('qText').textContent=q.q;
+  const box=$('opts');box.innerHTML='';
+  q.o.forEach((op,i)=>{const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="key">${KEYS[i]}</span><span>${op}</span>`;
+    b.addEventListener('click',()=>answer(i));box.appendChild(b)});
+  $('verdict').classList.add('hidden');$('verdict').innerHTML='';
+  const card=$('qcard');card.classList.remove('pop','away');void card.offsetWidth;card.classList.add('pop');
+  S.answered=false;S.busy=false;updateHUD();
+}
+function answer(idx){
+  if(S.answered||S.busy)return;S.answered=true;AudioFX.click();
+  const q=QBANK[S.order[S.i]],ok=idx===q.a,btns=[...$('opts').children];
+  btns.forEach((b,i)=>{b.classList.add('locked');
+    if(i===q.a)b.classList.add('ok');else if(i===idx)b.classList.add('bad');else b.classList.add('dim')});
+  const v=$('verdict');
+  if(ok){
+    S.correct++;S.streak++;S.maxStreak=Math.max(S.maxStreak,S.streak);S.lastOk=true;
+    scene.dataset.state='boost';setTimeout(()=>{if(scene.dataset.state==='boost')scene.dataset.state='cruise'},700);
+    const bike=$('bike');bike.classList.remove('hop');void bike.offsetWidth;bike.classList.add('hop');
+    AudioFX.correct();floatFx(CHEER[Math.floor(Math.random()*CHEER.length)]);smoke(1);
+    v.innerHTML=`<div class="vBanner good">✅ BENAR! PENGAPIAN SEMPURNA — MOTOR MELAJU!</div>
+      <div class="noteBox"><b>CATATAN MEKANIK</b>${q.n}</div>
+      <button class="cta go" id="cta">GAS TERUS ➜</button>`;
+  }else{
+    S.wrong++;S.streak=0;S.lastOk=false;
+    S.wrongList.push({no:S.order[S.i]+1,q:q.q,chosen:q.o[idx],right:q.o[q.a]});
+    scene.dataset.state='stalled';
+    $('stamp').classList.remove('show');void $('stamp').offsetWidth;$('stamp').classList.add('show');
+    const fl=$('flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');
+    const ride=$('scrRide');ride.classList.remove('shake');void ride.offsetWidth;ride.classList.add('shake');
+    setSpeed('0 KM/J • MOGOK',true);AudioFX.wrong();smoke(7);
+    v.innerHTML=`<div class="vBanner evil">❌ MOGOK! API BUSI HILANG — JAWABANMU KELIRU</div>
+      <div class="noteBox"><b>CATATAN MEKANIK</b>${q.n}</div>
+      <button class="cta fix" id="cta">🔧 GANTI BUSI & STARTER ULANG ➜</button>`;
+  }
+  v.classList.remove('hidden');updateHUD();
+  $('cta').addEventListener('click',goNext);
+  setTimeout(()=>{const c=$('cta');if(c)c.classList.add('pulse')},900);
+}
+function travel(cb){
+  scene.dataset.state='boost';
+  const from=S.curKm,to=kmAt(S.i+1),t0=performance.now(),D=950;
+  function fr(t){const k=Math.min(1,(t-t0)/D),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    setKm(from+(to-from)*e);
+    setSpeed(Math.round(Math.sin(Math.PI*k)*(S.lastOk?95:58))+' KM/J');
+    if(k<1)requestAnimationFrame(fr);else cb()}
+  requestAnimationFrame(fr);
+}
+function goNext(){
+  if(S.busy)return;S.busy=true;AudioFX.click();
+  if(!S.lastOk){AudioFX.starter();toast('⚡ BUSI BARU TERPASANG — PENGAPIAN NORMAL!')}
+  $('qcard').classList.add('away');
+  setTimeout(()=>travel(()=>{
+    S.i++;
+    if(S.i>=NSOAL){finish();return}
+    if(S.i%5===0){const c=CITIES[S.i/5];toast(`📍 TIBA DI ${c.n} • ${c.km} KM`);AudioFX.horn()}
+    scene.dataset.state='cruise';setSpeed((42+Math.round(Math.random()*6))+' KM/J');
+    renderQuestion();
+  }),220);
+}
+
+/* ================= FINISH ================= */
+let fwRun=false;
+function fireworks(){
+  const cv=$('fw'),cx=cv.getContext('2d');fwRun=true;
+  cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;
+  let P=[];
+  const cols=['#ffb703','#ef233c','#4cc9f0','#2dc653','#ffffff','#fb8500'];
+  const burst=()=>{const x=cv.width*(.15+Math.random()*.7),y=cv.height*(.1+Math.random()*.4),c=cols[Math.floor(Math.random()*cols.length)];
+    for(let k=0;k<26;k++){const a=Math.random()*Math.PI*2,v=1+Math.random()*3.2;
+      P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c})}};
+  let n=0;const iv=setInterval(()=>{burst();if(++n>14||!fwRun)clearInterval(iv)},520);burst();
+  (function loop(){if(!fwRun)return;cx.clearRect(0,0,cv.width,cv.height);
+    P=P.filter(p=>p.l>0);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.l-=.016;
+      cx.globalAlpha=Math.max(p.l,0);cx.fillStyle=p.c;cx.fillRect(p.x,p.y,3,3)});
+    cx.globalAlpha=1;requestAnimationFrame(loop)})();
+}
+function finish(){
+  AudioFX.finish();fwRun=false;
+  const nilai=Math.round(S.correct/NSOAL*100),perfect=S.wrong===0;
+  const secs=Math.round((Date.now()-S.start)/1000);
+  $('finNilai').textContent=nilai;
+  $('finPerfect').classList.toggle('hidden',!perfect);
+  if(perfect){
+    $('finPerfect').innerHTML='🏆 <b>TOURING SEMPURNA!</b> 40/40 jawaban benar — pengapian &amp; pengisian motormu prima, kamu sampai Yogyakarta tanpa mogok sedikit pun!';
+    $('finGrade').innerHTML='RIDER LEGENDARIS<small>Penguasa sistem pengapian &amp; pengisian sejati</small>';
+  }else{
+    const g=nilai>=85?['RIDER JAGOAN','Sedikit mogok bukan masalah — nyali dan ilmumu jalan terus!']:
+             nilai>=70?['RIDER SIAP JALAN','Catatan bengkelmu tinggal dipoles sedikit lagi.']:
+                       ['MASUK BENGKEL LATIHAN','Pelajari lagi catatan bengkel di bawah, lalu touring ulang!'];
+    $('finGrade').innerHTML=`${g[0]}<small>${g[1]}</small>`;
+  }
+  $('finSub').textContent=perfect?'SAMPURNA! TUGU JOGJA TANPA MOGOK':'TIBA DI TUGU JOGJA — YOGYAKARTA';
+  $('stBenar').textContent=S.correct;$('stMogok').textContent=S.wrong;
+  $('stAkurasi').textContent=nilai+'%';$('stKombo').textContent='×'+S.maxStreak;
+  $('stWaktu').textContent=`${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;
+  const cond=Math.max(5,100-S.wrong*12);
+  $('condPct').textContent=cond+'%';
+  setTimeout(()=>{$('condBar').style.width=cond+'%'},300);
+  const rv=$('review');rv.innerHTML='';
+  if(perfect){rv.innerHTML='<div class="rev good">Tidak ada catatan kerusakan — mesin, busi, dan pengisian semua prima! 🏆</div>'}
+  else{S.wrongList.forEach(w=>{rv.insertAdjacentHTML('beforeend',
+    `<div class="rev"><b>Soal #${w.no}.</b> ${w.q}<br><span class="ans">✘ Jawabanmu: ${w.chosen}</span><br><span class="ansC">✔ Seharusnya: ${w.right}</span></div>`})}
+  show('scrFinish');
+  if(perfect||S.correct>=30)fireworks();
+}
+
+/* ================= SCREENS / FLOW ================= */
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id))}
+function newTour(){
+  S.order=shuffle([...Array(QBANK.length).keys()]);
+  S.i=0;S.correct=0;S.wrong=0;S.streak=0;S.maxStreak=0;S.wrongList=[];S.busy=false;S.start=Date.now();
+  $('condBar').style.style;
+  $('condBar').style.width='100%';
+  setKm(0);scene.dataset.state='cruise';renderQuestion();
+  AudioFX.starter();setTimeout(()=>AudioFX.correct&&AudioFX.tone(60,40,.5,'sawtooth',.1),550);
+  toast(`GAS, ${S.name.toUpperCase()}! 🏁`,2000);
+}
+$('btnStart').addEventListener('click',()=>{
+  AudioFX.init();AudioFX.click();
+  S.name=($('inName').value.trim()||'RIDER SMK');
+  $('hudName').textContent=S.name.toUpperCase();
+  show('scrRide');newTour();
+});
+$('btnAgain').addEventListener('click',()=>{AudioFX.click();fwRun=false;show('scrRide');newTour()});
+$('btnHome').addEventListener('click',()=>{AudioFX.click();fwRun=false;show('scrStart')});
+$('btnMute').addEventListener('click',()=>{AudioFX.muted=!AudioFX.muted;$('btnMute').textContent=AudioFX.muted?'🔇':'🔊'});
+setKm(0);
+</script>
+</body>
+</html>
