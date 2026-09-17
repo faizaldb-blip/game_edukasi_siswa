@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Pengelasan Kelas X SMK</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#172554,#2563eb);min-height:100vh;color:#172033}
+.container{max-width:850px;margin:0 auto;padding:24px}.card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 15px 40px #0004}
+h1{text-align:center;color:#1d4ed8;margin-top:0}.subtitle{text-align:center;color:#64748b}
+label{display:block;font-weight:700;margin:15px 0 7px}input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
+button{border:0;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:700;cursor:pointer}.primary{background:#2563eb;color:white;width:100%;margin-top:20px}.primary:hover{background:#1d4ed8}
+.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}.badge{background:#dbeafe;color:#1d4ed8;padding:8px 12px;border-radius:999px;font-weight:bold}.timer{background:#fee2e2;color:#b91c1c;padding:10px 15px;border-radius:10px;font-weight:bold;min-width:105px;text-align:center}
+.progress{height:9px;background:#e2e8f0;border-radius:9px;overflow:hidden;margin-bottom:22px}.bar{height:100%;background:#2563eb;width:0%;transition:.3s}
+.question{font-size:20px;font-weight:700;line-height:1.5;margin-bottom:18px}.option{display:block;width:100%;text-align:left;background:#f8fafc;border:2px solid #e2e8f0;margin:10px 0;padding:14px;border-radius:10px}.option:hover{border-color:#60a5fa;background:#eff6ff}.option.selected{border-color:#2563eb;background:#dbeafe}
+.nav{display:flex;justify-content:space-between;margin-top:20px}.nav button{background:#e2e8f0}.nav .next{background:#2563eb;color:#fff}
+.result{text-align:center}.score{font-size:52px;font-weight:800;color:#2563eb}.info{background:#f1f5f9;padding:15px;border-radius:10px;margin:15px 0;text-align:left}
+.review{text-align:left;margin-top:20px}.review-item{padding:13px;border-bottom:1px solid #e2e8f0}.correct{color:#15803d}.wrong{color:#b91c1c}
+.hidden{display:none}.small{text-align:center;color:#64748b;font-size:13px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" id="identity">
+<h1>Quiz Pengelasan</h1>
+<p class="subtitle">Pembelajaran Pengelasan — Kelas X SMK</p>
+<label>Nama Siswa</label><input id="nama" placeholder="Masukkan nama lengkap">
+<label>Kelas</label><input id="kelas" placeholder="Contoh: X TSM 1">
+<label>Nomor Absen</label><input id="absen" type="number" min="1" placeholder="Masukkan nomor absen">
+<button class="primary" onclick="startQuiz()">Mulai Kuis</button>
+<p class="small">20 soal pilihan ganda • 5 opsi • 60 detik per soal</p>
+</div>
+
+<div class="card hidden" id="quiz">
+<div class="top"><span class="badge" id="number">Soal 1 dari 20</span><span class="timer" id="timer">60 detik</span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="question" id="question"></div>
+<div id="options"></div>
+<div class="nav"><button onclick="prevQuestion()">← Sebelumnya</button><button class="next" onclick="nextQuestion()">Berikutnya →</button></div>
+<p class="small">Jika waktu habis, soal akan otomatis berpindah.</p>
+</div>
+
+<div class="card hidden result" id="result">
+<h1>Hasil Kuis</h1><div class="score" id="score"></div><div id="studentInfo" class="info"></div>
+<p id="message"></p><button class="primary" onclick="location.reload()">Kerjakan Lagi</button>
+<div class="review" id="review"></div>
+</div>
+</div>
+
+<script>
+const questions=[
+["Proses penyambungan logam dengan mencairkan sebagian logam induk dan/atau logam tambah menggunakan panas disebut ...",["Pengelasan","Pengecoran","Pembubutan","Pengefraisan","Penempaan"],0],
+["Peralatan pelindung mata dan wajah yang umum digunakan saat pengelasan busur adalah ...",["Helm las","Earplug","Safety belt","Sepatu safety","Masker debu"],0],
+["Fungsi utama elektroda pada pengelasan SMAW adalah ...",["Menghasilkan busur dan dapat menjadi logam pengisi","Mendinginkan benda kerja","Mengukur suhu","Membersihkan terak","Mengatur tekanan gas"],0],
+["SMAW merupakan singkatan dari ...",["Shielded Metal Arc Welding","Simple Metal Air Welding","Steel Manual Arc Work","Shield Metal Air Work","Standard Metal Arc Wire"],0],
+["Gas pelindung yang banyak digunakan pada proses pengelasan MIG adalah ...",["Argon atau campuran argon","Oksigen murni","Hidrogen murni","Asetilena","Udara bertekanan"],0],
+["Pada pengelasan, terak berfungsi terutama untuk ...",["Melindungi logam las saat membeku","Menaikkan tekanan gas","Mempercepat pendinginan ekstrem","Mengukur panjang busur","Menghaluskan elektroda"],0],
+["Alat yang digunakan untuk menjepit benda kerja agar tidak bergerak saat pengelasan adalah ...",["Klem atau tang penjepit","Palu","Sikat kawat","Gerinda tangan","Meteran"],0],
+["Jarak antara ujung elektroda dan permukaan benda kerja disebut ...",["Panjang busur","Lebar kampuh","Sudut bevel","Root gap","Tebal pelat"],0],
+["Salah satu penyebab utama porositas pada hasil las adalah ...",["Kontaminasi atau perlindungan gas yang tidak memadai","Kampuh terlalu bersih","Elektroda tersimpan baik","Arus sesuai spesifikasi","Permukaan bebas minyak"],0],
+["Sebelum mengelas, permukaan benda kerja sebaiknya ...",["Dibersihkan dari karat, minyak, cat, dan kotoran","Dibasahi air","Dilapisi oli","Dibiarkan berkarat","Ditutup plastik"],0],
+["Arus pengelasan yang terlalu tinggi dapat menyebabkan ...",["Penetrasi berlebihan dan undercut","Tidak terbentuk busur sama sekali","Elektroda tidak dapat mencair","Benda kerja tidak panas","Gas pelindung bertambah"],0],
+["Salah satu bahaya utama radiasi busur las terhadap mata adalah ...",["Menyebabkan iritasi dan cedera mata","Meningkatkan ketajaman penglihatan","Menurunkan suhu mata","Membersihkan kornea","Mengurangi silau"],0],
+["APD yang tepat untuk melindungi tangan saat pengelasan adalah ...",["Sarung tangan las","Sarung tangan kain tipis biasa","Sarung tangan plastik tipis","Sarung tangan medis sekali pakai","Tanpa sarung tangan"],0],
+["Fungsi ventilasi yang baik di area pengelasan adalah ...",["Mengurangi paparan asap dan gas hasil pengelasan","Meningkatkan asap","Menaikkan kelembapan","Mengurangi cahaya busur","Mendinginkan elektroda"],0],
+["Posisi pengelasan dengan sambungan berada di atas kepala operator disebut posisi ...",["Overhead","Flat","Horizontal","Vertical down","Bench"],0],
+["Cacat las berupa alur pada logam induk di dekat toe las disebut ...",["Undercut","Porosity","Slag inclusion","Overlap","Crack"],0],
+["Alat untuk membersihkan terak setelah pengelasan SMAW adalah ...",["Palu terak dan sikat kawat","Tang kombinasi saja","Kunci pas","Obeng","Jangka sorong"],0],
+["Pada simbol pengelasan, informasi ukuran dan jenis las digunakan untuk ...",["Menentukan spesifikasi sambungan yang harus dibuat","Menentukan warna helm","Mengatur ventilasi bengkel","Menentukan ukuran sepatu","Menghitung jumlah operator"],0],
+["Sebelum menggunakan mesin las, tindakan keselamatan yang benar adalah ...",["Memeriksa kabel, koneksi, dan kondisi mesin","Menyentuh elektroda dengan tangan basah","Melepas grounding","Mengabaikan kabel rusak","Mengelas tanpa APD"],0],
+["Tujuan utama pengaturan parameter pengelasan yang sesuai adalah ...",["Mendapatkan sambungan yang aman dan berkualitas","Membuat asap sebanyak mungkin","Mempercepat pekerjaan tanpa memperhatikan hasil","Menghabiskan elektroda","Membuat busur selalu sangat panjang"],0]
+];
+
+let current=0,answers=Array(20).fill(null),time=60,timerInterval,student={};
+
+function startQuiz(){
+ const nama=document.getElementById("nama").value.trim(), kelas=document.getElementById("kelas").value.trim(), absen=document.getElementById("absen").value.trim();
+ if(!nama||!kelas||!absen){alert("Lengkapi nama, kelas, dan nomor absen terlebih dahulu.");return}
+ student={nama,kelas,absen};
+ document.getElementById("identity").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");
+ renderQuestion();
+}
+function renderQuestion(){
+ clearInterval(timerInterval);time=60;
+ document.getElementById("number").textContent=`Soal ${current+1} dari 20`;
+ document.getElementById("bar").style.width=((current+1)/20*100)+"%";
+ document.getElementById("question").textContent=questions[current][0];
+ const box=document.getElementById("options");box.innerHTML="";
+ questions[current][1].forEach((o,i)=>{
+  const b=document.createElement("button");b.className="option"+(answers[current]===i?" selected":"");
+  b.textContent=String.fromCharCode(65+i)+". "+o;b.onclick=()=>selectAnswer(i);box.appendChild(b);
+ });
+ updateTimer();
+ timerInterval=setInterval(()=>{time--;updateTimer();if(time<=0){clearInterval(timerInterval);nextQuestion(true)}},1000);
+}
+function updateTimer(){document.getElementById("timer").textContent=time+" detik";}
+function selectAnswer(i){answers[current]=i;document.querySelectorAll(".option").forEach((b,j)=>b.classList.toggle("selected",j===i));}
+function nextQuestion(auto=false){if(current<19){current++;renderQuestion()}else finishQuiz();}
+function prevQuestion(){if(current>0){current--;renderQuestion()}}
+function finishQuiz(){
+ clearInterval(timerInterval);document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ let score=0;answers.forEach((a,i)=>{if(a===questions[i][2])score++});
+ document.getElementById("score").textContent=score+"/20";
+ document.getElementById("studentInfo").innerHTML=`<b>Nama:</b> ${esc(student.nama)}<br><b>Kelas:</b> ${esc(student.kelas)}<br><b>Nomor Absen:</b> ${esc(student.absen)}`;
+ document.getElementById("message").textContent=score>=16?"Pemahaman materi sangat baik.":score>=12?"Pemahaman materi cukup baik, tetap berlatih.":"Perlu mengulang materi pengelasan dan berlatih kembali.";
+ const r=document.getElementById("review");r.innerHTML="<h3>Review Jawaban</h3>";
+ questions.forEach((q,i)=>{let ok=answers[i]===q[2];r.innerHTML+=`<div class="review-item ${ok?'correct':'wrong'}"><b>${i+1}. ${esc(q[0])}</b><br>Jawaban Anda: ${answers[i]===null?"Tidak dijawab":esc(q[1][answers[i]])}<br>Jawaban benar: ${esc(q[1][q[2]])}</div>`});
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+</script>
+</body>
+</html>
