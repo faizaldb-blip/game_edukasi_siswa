@@ -10,4 +10,4 @@ https://faizaldb-blip.github.io/game_edukasi_siswa/game_dsrkelistrikanlampu_smkt
 
 https://faizaldb-blip.github.io/game_edukasi_siswa/game_sistempendingin_xitsm.html
 
-https://faizaldb-blip.github.io/game_edukasi_siswa/game_sistempendingin_xitsm.html
+
